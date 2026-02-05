@@ -21,9 +21,10 @@
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2">Kategori</label>
                             <select name="category" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                                <option value="" disabled selected></option>
                                 <option value="mobile">Mobile Asset (Laptop, Tablet, Tools)</option>
-                                <option value="semi-mobile">Semi-Mobile (PC, Printer)</option>
-                                <option value="fixed">Fixed Asset (AC, Genset, Meja)</option>
+                                <option value="semi-mobile">Semi-Mobile (PC, Printer, Router)</option>
+                                <option value="fixed">Fixed Asset (AC, CCTV, Meja)</option>
                             </select>
                         </div>
 

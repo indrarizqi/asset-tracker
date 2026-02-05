@@ -3,32 +3,29 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
     /**
      * Seed the application's database.
      */
     public function run(): void
     {
         // Akun Super Admin
-        \App\Models\User::factory()->create([
+        User::factory()->create([
             'name' => 'Super Admin',
-            'email' => 'super@vodeco.id',
+            'email' => 'super@vodeco.co.id',
             'role' => 'super_admin',
-            'password' => bcrypt('superpassword'),
+            'password' => bcrypt('super-123'),
         ]);
 
-        // Akun Admin Biasa
-        \App\Models\User::factory()->create([
+        // Akun Admin
+        User::factory()->create([
             'name' => 'Admin',
-            'email' => 'admin@vodeco.id',
+            'email' => 'admin@vodeco.co.id',
             'role' => 'admin',
-            'password' => bcrypt('password'),
+            'password' => bcrypt('admin-123'),
         ]);
     }
 }
