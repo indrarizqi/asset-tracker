@@ -16,6 +16,12 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="url('/mobile')" :active="request()->is('mobile')">
+                        {{ __('Scanner via HP') }}
+                    </x-nav-link>
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
@@ -60,6 +66,9 @@
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
+                    <x-responsive-nav-link :href="url('/mobile')" :active="request()->is('mobile')">
+                        {{ __('Scanner via HP') }}
+                    </x-responsive-nav-link>
             </div>
         </div>
     </div>

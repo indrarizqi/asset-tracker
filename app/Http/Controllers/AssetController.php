@@ -39,7 +39,12 @@ class AssetController extends Controller
             'name' => $request->name,
             'category' => $request->category,
             'asset_tag' => $newTag,
-            'status' => 'available'
+            'status' => 'available',
+
+            // Revisi Form Baru
+            'purchase_date' => $request->purchase_date,
+            'asset_condition' => $request->asset_condition,
+            'person_in_charge' => $request->person_in_charge,
         ]);
 
         return redirect('/assets/print')->with('success', 'Aset berhasil ditambah: ' . $newTag);
@@ -52,19 +57,31 @@ class AssetController extends Controller
         return view('assets.print_preview', compact('assets'));
     }
 
-    public function downloadPdf()
+    public function downloadPdf(Request $request)
     {
-        $assets = Asset::all();
+        // Cek apakah ada ID yang dipilih dari checkbox?
+        if ($request->has('ids')) {
+            // Ambil HANYA aset yang ID-nya ada di list checkbox
+            $assets = Asset::whereIn('id', $request->ids)->get();
+        } else {
+            // Fallback: Ambil semua jika tidak ada filter (opsional)
+            $assets = Asset::all();
+        }
+
+        if ($assets->isEmpty()) {
+            return redirect()->back()->with('error', 'Tidak ada aset yang dipilih.');
+        }
         
-        // Generate QR Code dalam format Base64 agar muncul di PDF
+        // Generate QR Code untuk setiap aset terpilih
         foreach ($assets as $asset) {
+            // Kita gunakan library simple-qrcode
             $asset->qr_code = base64_encode(QrCode::format('png')->size(100)->generate($asset->asset_tag));
         }
 
         $pdf = Pdf::loadView('assets.pdf_label', compact('assets'));
-        $pdf->setPaper('a4', 'portrait');
         
-        return $pdf->stream('labels-vodeco.pdf');
+        // Tips: Gunakan 'stream' agar bisa preview dulu di browser, bukan langsung 'download'
+        return $pdf->stream('labels-vodeco-selected.pdf');
     }
 
     // 1. Tampilkan Form Edit
