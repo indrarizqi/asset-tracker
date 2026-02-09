@@ -15,7 +15,7 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="block text-gray-700 font-bold mb-2">Kategori</label>
+                        <label class="block text-gray-700 font-bold mb-2">Kategori Aset</label>
                         <select name="category" class="w-full border rounded py-2 px-3 text-gray-700">
                             <option value="mobile" {{ $asset->category == 'mobile' ? 'selected' : '' }}>Mobile Asset</option>
                             <option value="semi-mobile" {{ $asset->category == 'semi-mobile' ? 'selected' : '' }}>Semi-Mobile</option>

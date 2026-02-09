@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Halaman Depan (Login)
@@ -28,9 +29,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/assets/{id}/edit', [AssetController::class, 'edit'])->name('assets.edit');
     Route::put('/assets/{id}', [AssetController::class, 'update'])->name('assets.update');
 
-    // 3. Area Khusus Super Admin (Contoh)
+    // 3. Area Khusus Super Admin
     Route::middleware(['role:super_admin'])->group(function () {
         Route::delete('/assets/{id}', [AssetController::class, 'destroy'])->name('assets.destroy');
+        Route::resource('users', UserController::class);
+        Route::get('/report/assets', [AssetController::class, 'exportReport'])->name('report.assets');
     });
 });
 

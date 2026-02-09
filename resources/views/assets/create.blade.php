@@ -19,7 +19,7 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">Kategori</label>
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Kategori Aset</label>
                             <select name="category" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" required>
                                 <option value="" disabled selected></option>
                                 <option value="mobile">Mobile Asset (Laptop, Tablet, Tools)</option>

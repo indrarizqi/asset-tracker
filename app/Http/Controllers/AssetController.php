@@ -14,7 +14,7 @@ class AssetController extends Controller
         return view('assets.create');
     }
 
-    // simpan data & generate auto ID
+    // Simpan Data & Generate Auto ID
     public function store(Request $request)
     {
         $request->validate([
@@ -29,28 +29,32 @@ class AssetController extends Controller
         };
         $year = date('y');
         
+        // Auto-Numbering
         $lastAsset = Asset::where('asset_tag', 'LIKE', "$prefix-$year-%")
-                          ->orderBy('id', 'desc')->first();
-                          
+                        ->orderBy('id', 'desc')->first();       
         $sequence = $lastAsset ? intval(substr($lastAsset->asset_tag, -3)) + 1 : 1;
         $newTag = sprintf("%s-%s-%03d", $prefix, $year, $sequence);
+
+        // Jika PJ diisi -> Status 'in_use'. Jika kosong -> 'available'
+        $status = $request->filled('person_in_charge') ? 'in_use' : 'available';
 
         Asset::create([
             'name' => $request->name,
             'category' => $request->category,
             'asset_tag' => $newTag,
-            'status' => 'available',
-
-            // Revisi Form Baru
+            'status' => $status, // Gunakan variabel status dinamis di atas
+            
+            // Data Tambahan
             'purchase_date' => $request->purchase_date,
             'asset_condition' => $request->asset_condition,
             'person_in_charge' => $request->person_in_charge,
+            
         ]);
 
-        return redirect('/assets/print')->with('success', 'Aset berhasil ditambah: ' . $newTag);
+        return redirect('/assets/print')->with('success', 'Aset berhasil ditambah: ' . $newTag . ' (' . ucfirst($status) . ')');
     }
 
-    // preview & dan cetak label
+    // Preview & Cetak Label
     public function printPreview()
     {
         $assets = Asset::latest()->get(); // Ambil semua aset
@@ -84,14 +88,12 @@ class AssetController extends Controller
         return $pdf->stream('labels-vodeco-selected.pdf');
     }
 
-    // 1. Tampilkan Form Edit
     public function edit($id)
     {
         $asset = Asset::findOrFail($id);
         return view('assets.edit', compact('asset'));
     }
 
-    // 2. Simpan Perubahan
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -109,12 +111,28 @@ class AssetController extends Controller
         return redirect()->route('dashboard')->with('success', 'Data aset berhasil diperbarui!');
     }
 
-    // 3. Hapus Aset (Untuk Super Admin)
+    // Hapus Aset (Untuk Super Admin)
     public function destroy($id)
     {
         $asset = Asset::findOrFail($id);
         $asset->delete();
         return redirect()->route('dashboard')->with('success', 'Aset berhasil dihapus.');
+    }
+
+    // Export Laporan Aset (Untuk Super Admin)
+    public function exportReport()
+    {
+        // Ambil semua data aset, urutkan berdasarkan kategori lalu nama
+        $assets = Asset::orderBy('category')->orderBy('name')->get();
+        
+        // Load view PDF yang baru kita buat
+        $pdf = Pdf::loadView('assets.pdf_report', compact('assets'));
+        
+        // Set ukuran kertas jadi Landscape agar muat banyak kolom
+        $pdf->setPaper('a4', 'landscape');
+        
+        // Download file
+        return $pdf->stream('Laporan-Aset-Vodeco.pdf');
     }
 
     public function index()

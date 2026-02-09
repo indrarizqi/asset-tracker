@@ -19,9 +19,17 @@
 
                 <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                     <x-nav-link :href="url('/mobile')" :active="request()->is('mobile')">
-                        {{ __('Scanner via HP') }}
+                        {{ __('Mobile Scanner') }}
                     </x-nav-link>
                 </div>
+
+                @if(Auth::user()->role === 'super_admin')
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                            {{ __('👥 Kelola User') }}
+                        </x-nav-link>
+                    </div>
+                @endif
             </div>
 
             <!-- Settings Dropdown -->
@@ -67,7 +75,7 @@
                     </svg>
                 </button>
                     <x-responsive-nav-link :href="url('/mobile')" :active="request()->is('mobile')">
-                        {{ __('Scanner via HP') }}
+                        {{ __('Mobile Scanner') }}
                     </x-responsive-nav-link>
             </div>
         </div>
@@ -80,6 +88,14 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
         </div>
+
+        @if(Auth::user()->role === 'super_admin')
+            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                    {{ __('👥 Kelola User') }}
+                </x-nav-link>
+            </div>
+        @endif
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
