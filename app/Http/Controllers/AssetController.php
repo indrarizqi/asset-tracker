@@ -51,7 +51,7 @@ class AssetController extends Controller
             
         ]);
 
-        return redirect('/assets/print')->with('success', 'Aset berhasil ditambah: ' . $newTag . ' (' . ucfirst($status) . ')');
+        return redirect()->route('dashboard')->with('success', 'Aset berhasil ditambah: ' . $newTag . ' (' . ucfirst($status) . ')');
     }
 
     // Preview & Cetak Label

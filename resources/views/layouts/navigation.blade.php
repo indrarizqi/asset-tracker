@@ -15,18 +15,16 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                </div>
 
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-nav-link :href="url('/mobile')" :active="request()->is('mobile')">
-                        {{ __('Mobile Scanner') }}
+                    <x-nav-link :href="route('assets.print')" :active="request()->routeIs('assets.print')">
+                        {{ __('Cetak QR Code') }}
                     </x-nav-link>
                 </div>
 
-                @if(Auth::user()->role === 'super_admin')
+                @if(Auth::user()->role === 'admin')
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                        <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
-                            {{ __('👥 Kelola User') }}
+                        <x-nav-link :href="url('/mobile')" :active="request()->is('mobile')">
+                            {{ __('Mobile Scanner') }}
                         </x-nav-link>
                     </div>
                 @endif
@@ -48,18 +46,21 @@
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile.edit')">
-                            {{ __('Profile') }}
-                        </x-dropdown-link>
+                        @if(Auth::user()->role === 'super_admin')
+                            <x-dropdown-link :href="route('users.index')">
+                                {{ __('Users Management') }}
+                            </x-dropdown-link>
+                            
+                            <div class="border-t border-gray-100"></div>
+                        @endif
 
-                        <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
                                     onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                                {{ __('Log Out') }}
+                                {{ __('Sign Out') }}
                             </x-dropdown-link>
                         </form>
                     </x-slot>
@@ -74,25 +75,39 @@
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
-                    <x-responsive-nav-link :href="url('/mobile')" :active="request()->is('mobile')">
-                        {{ __('Mobile Scanner') }}
-                    </x-responsive-nav-link>
-            </div>
+                </div>
         </div>
     </div>
 
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+        <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+
+            <x-responsive-nav-link :href="route('assets.print')" :active="request()->routeIs('assets.print')">
+                {{ __('Cetak QR Code') }}
+            </x-responsive-nav-link>
+
+            @if(Auth::user()->role === 'admin')
+                <x-responsive-nav-link :href="url('/mobile')" :active="request()->is('mobile')">
+                    {{ __('Mobile Scanner') }}
+                </x-responsive-nav-link>
+            @endif
+
+            @if(Auth::user()->role === 'super_admin')
+                <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
+                    {{ __('Users Management') }}
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         @if(Auth::user()->role === 'super_admin')
             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                 <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.*')">
-                    {{ __('👥 Kelola User') }}
+                    {{ __('Users Management') }}
                 </x-nav-link>
             </div>
         @endif
@@ -105,10 +120,7 @@
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
-                    {{ __('Profile') }}
-                </x-responsive-nav-link>
-
+                
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
@@ -116,7 +128,7 @@
                     <x-responsive-nav-link :href="route('logout')"
                             onclick="event.preventDefault();
                                         this.closest('form').submit();">
-                        {{ __('Log Out') }}
+                        {{ __('Sign Out') }}
                     </x-responsive-nav-link>
                 </form>
             </div>

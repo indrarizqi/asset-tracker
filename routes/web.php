@@ -16,12 +16,7 @@ Route::get('/dashboard', [AssetController::class, 'index'])->middleware(['auth',
 // --- GRUP ROUTE YANG WAJIB LOGIN ---
 Route::middleware('auth')->group(function () {
 
-    // 1. Rute Profile
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // 2. Fitur Asset Tracking (Operator & Admin)
+    // Fitur Asset Tracking (Operator & Admin)
     Route::get('/assets/create', [AssetController::class, 'create'])->name('assets.create');
     Route::post('/assets/store', [AssetController::class, 'store'])->name('assets.store');
     Route::get('/assets/print', [AssetController::class, 'printPreview'])->name('assets.print');
@@ -29,7 +24,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/assets/{id}/edit', [AssetController::class, 'edit'])->name('assets.edit');
     Route::put('/assets/{id}', [AssetController::class, 'update'])->name('assets.update');
 
-    // 3. Area Khusus Super Admin
+    // Area Khusus Super Admin
     Route::middleware(['role:super_admin'])->group(function () {
         Route::delete('/assets/{id}', [AssetController::class, 'destroy'])->name('assets.destroy');
         Route::resource('users', UserController::class);

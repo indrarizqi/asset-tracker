@@ -1,7 +1,9 @@
 <x-app-layout>
+    <x-slot name="title">Dashboard</x-slot>
+
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Asset Dashboard') }}
+            {{ __('Dashboard') }}
         </h2>
     </x-slot>
 
@@ -21,10 +23,6 @@
                             📄 Download Laporan PDF
                         </a>
                     @endif
-                </div>
-                
-                <div class="text-gray-600">
-                    Login as : <span class="font-bold uppercase text-blue-600">{{ Auth::user()->role }}</span>
                 </div>
             </div>
 

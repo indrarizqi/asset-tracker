@@ -18,14 +18,21 @@ class ScannerController extends Controller
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
+
+        // --- VALIDASI ROLE BARU (HANYA ADMIN) ---
+        if ($user->role !== 'admin') {
+            return response()->json(['message' => 'Akses ditolak! Hanya Admin (Staff) yang boleh scan.'], 403);
+        }
+        // ----------------------------------------
+
         // Buat token (kunci akses) untuk HP
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'message' => 'Hi ' . $user->name . ', selamat bekerja!',
+            'message' => 'Hi ' . $user->name . ', Selamat Datang!',
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'role' => $user->role, // Kirim role agar HP tahu menu apa yang harus ditampilkan
+            'role' => $user->role,
         ]);
     }
 
