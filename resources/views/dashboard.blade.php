@@ -27,77 +27,102 @@
             </div>
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 overflow-x-auto">
-                    <table class="min-w-full border-collapse border border-gray-200">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th class="border p-2 text-left">No</th>
-                                <th class="border p-2 text-left">Asset ID</th>
-                                <th class="border p-2 text-left">Asset Name</th>
-                                <th class="border p-2 text-left">Person In Charge & Info</th>
-                                <th class="border p-2 text-left">Asset Category</th>
-                                <th class="border p-2 text-left">Status</th>
-                                <th class="border p-2 text-center">Action</th>
+                <div class="overflow-x-auto bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
+                    <table class="min-w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50/80 text-gray-500 text-[11px] font-extrabold uppercase tracking-wider">
+                                <th class="px-6 py-4 rounded-tl-xl w-10 text-center">No</th>
+                                <th class="px-6 py-4">Asset ID</th>
+                                <th class="px-6 py-4">Asset Name</th>
+                                <th class="px-6 py-4">Person In Charge & Info</th>
+                                <th class="px-6 py-4 text-center">Asset Category</th>
+                                <th class="px-6 py-4 text-center">Status</th>
+                                <th class="px-6 py-4 rounded-tr-xl text-center">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @forelse($assets as $asset)
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-mono">
+                        <tbody class="bg-white">
+                            @foreach($assets as $asset)
+                            <tr class="hover:bg-blue-50/40 transition-colors duration-200 group border-b border-gray-50 last:border-none">
+                                
+                                <td class="px-6 py-4 text-sm text-gray-400 font-medium text-center">
                                     {{ $loop->iteration }}
                                 </td>
-                                <td class="border p-2 font-mono font-bold">{{ $asset->asset_tag }}</td>
-                                <td class="border p-2">
-                                    <div class="font-bold">{{ $asset->name }}</div>
-                                    <div class="text-xs text-gray-500">Kondisi: {{ $asset->asset_condition ?? '-' }}</div>
+
+                                <td class="px-6 py-4">
+                                    <span class="font-mono font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded-md text-sm group-hover:bg-white transition">{{ $asset->asset_tag }}</span>
                                 </td>
                                 
-                                <td class="border p-2">
-                                    @if($asset->person_in_charge)
-                                        <div class="text-sm font-semibold text-gray-800">👤 {{ $asset->person_in_charge }}</div>
-                                    @else
-                                        <div class="text-xs text-gray-400 italic">-</div>
-                                    @endif
-                                    
-                                    <div class="text-xs text-gray-500 mt-1">
-                                        📅 Beli: {{ $asset->purchase_date ? date('d M Y', strtotime($asset->purchase_date)) : '-' }}
+                                <td class="px-6 py-4">
+                                    <div class="font-bold text-gray-900">{{ $asset->name }}</div>
+                                    <div class="text-[11px] text-gray-500 mt-1">
+                                        Kondisi: <span class="font-medium {{ strtolower($asset->condition ?? 'Baik') == 'rusak' ? 'text-red-500' : 'text-green-600' }}">
+                                            {{ $asset->condition ?? 'Baik' }}
+                                        </span>
                                     </div>
                                 </td>
 
-                                <td class="border p-2">
-                                    <span class="px-2 py-1 rounded text-xs font-bold 
-                                        {{ $asset->category == 'mobile' ? 'bg-purple-100 text-purple-800' : 
-                                        ($asset->category == 'fixed' ? 'bg-red-100 text-red-800' : 'bg-orange-100 text-orange-800') }}">
-                                        {{ ucfirst($asset->category) }}
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center text-sm font-semibold text-gray-700">
+                                        <svg class="w-4 h-4 text-blue-500 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                        {{ $asset->person_in_charge ?? 'Tidak ada' }}
+                                    </div>
+                                    <div class="flex items-center text-[11px] text-gray-400 mt-1 font-medium">
+                                        <svg class="w-3.5 h-3.5 text-red-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                        Beli: {{ $asset->purchase_date ? \Carbon\Carbon::parse($asset->purchase_date)->format('d M Y') : '-' }}
+                                    </div>
+                                </td>
+
+                                <td class="px-6 py-4 text-center">
+                                    <span class="inline-block px-3 py-1 text-[11px] font-bold uppercase tracking-wider rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-sm">
+                                        {{ $asset->category }}
                                     </span>
                                 </td>
-                                <td class="border p-2">
-                                    @if($asset->status == 'available')
-                                        <span class="px-2 py-1 rounded text-xs font-bold bg-green-100 text-green-800">Available</span>
-                                    @elseif($asset->status == 'in_use')
-                                        <span class="px-2 py-1 rounded text-xs font-bold bg-blue-100 text-blue-800">In Use</span>
-                                    @elseif($asset->status == 'maintenance')
-                                        <span class="px-2 py-1 rounded text-xs font-bold bg-yellow-100 text-yellow-800">Maintenance</span>
-                                    @else
-                                        <span class="px-2 py-1 rounded text-xs font-bold bg-red-100 text-red-800">{{ ucfirst($asset->status) }}</span>
-                                    @endif
+
+                                <td class="px-6 py-4 text-center">
+                                    @php
+                                        $statusKey = strtolower(str_replace(' ', '_', $asset->status));
+                                        $colorClass = 'bg-gray-100 text-gray-700'; 
+                                        
+                                        if (str_contains($statusKey, 'available')) {
+                                            $colorClass = 'bg-green-100 text-green-700';
+                                        } elseif (str_contains($statusKey, 'use')) {
+                                            $colorClass = 'bg-blue-100 text-blue-700';
+                                        } elseif (str_contains($statusKey, 'maintenance')) {
+                                            $colorClass = 'bg-yellow-100 text-yellow-700';
+                                        }
+                                    @endphp
+                                    
+                                    <span class="inline-block px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider rounded-full {{ $colorClass }}">
+                                        {{ str_replace('_', ' ', $asset->status) }}
+                                    </span>
                                 </td>
-                                <td class="border p-2 text-center">
-                                    <a href="{{ route('assets.edit', $asset->id) }}" class="text-blue-500 hover:underline text-sm mr-2">Edit</a>
-                                    @if(Auth::user()->role === 'super_admin')
-                                        <form action="{{ route('assets.destroy', $asset->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin hapus aset ini?');">
+
+                                <td class="px-6 py-4 text-center">
+                                    <div class="flex items-center justify-center gap-2">
+                                        
+                                        <a href="{{ route('assets.edit', $asset->id) }}" title="Edit Aset" 
+                                        class="p-2 text-blue-500 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-lg transition-all duration-200 shadow-sm">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+                                            </svg>
+                                        </a>
+                                        
+                                        <form action="{{ route('assets.destroy', $asset->id) }}" method="POST" class="inline m-0 p-0" onsubmit="return confirm('Apakah Anda yakin ingin menghapus aset ini?');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="text-red-500 hover:underline text-sm">Hapus</button>
+                                            <button type="submit" title="Hapus Aset" 
+                                                    class="p-2 text-red-500 bg-red-50 hover:bg-red-600 hover:text-white rounded-lg transition-all duration-200 shadow-sm">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                            </button>
                                         </form>
-                                    @endif
+
+                                    </div>
                                 </td>
+                                
                             </tr>
-                            @empty
-                            <tr>
-                                <td colspan="6" class="border p-4 text-center text-gray-500">Belum ada data aset.</td>
-                            </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
                 </div>

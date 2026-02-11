@@ -19,6 +19,7 @@ return new class extends Migration
             $table->date('purchase_date')->nullable();
             $table->string('category')->default('General'); 
             $table->string('status')->default('available');
+            $table->string('condition')->default('Baik');
             $table->timestamps();
         });
     }
