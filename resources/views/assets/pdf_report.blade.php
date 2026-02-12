@@ -45,8 +45,8 @@
             text-align: center;
         }
 
-        .status-avail {
-            color: green;
+        .status-maintenance {
+            color: orange;
             font-weight: bold;
         }
 
@@ -103,9 +103,9 @@
                             {{ $asset->person_in_charge ?? '-' }}
                             <br><small style="color: #666;">Beli: {{ $asset->purchase_date }}</small>
                         </td>
-                        <td>{{ $asset->condition ?? '-' }}</td>
+                        <td class="{{ $asset->condition == 'Baik' ? 'status-used' : ($asset->condition == 'Rusak-ringan' ? 'status-maintenance' : 'status-broken') }}">{{ $asset->condition ?? '-' }}</td>
                         <td class="
-                                    {{ $asset->status == 'available' ? 'status-avail' :
+                                    {{ $asset->status == 'maintenance' ? 'status-maintenance' :
                 ($asset->status == 'in_use' ? 'status-used' : 'status-broken') }}">
                             {{ ucfirst(str_replace('_', ' ', $asset->status)) }}
                         </td>

@@ -108,8 +108,8 @@
                                     $statusKey = strtolower(str_replace(' ', '_', $asset->status));
                                     $colorClass = 'bg-gray-100 text-gray-700';
 
-                                    if (str_contains($statusKey, 'available')) {
-                                    $colorClass = 'bg-green-100 text-green-700';
+                                    if (str_contains($statusKey, 'broken')) {
+                                    $colorClass = 'bg-red-100 text-red-700';
                                     } elseif (str_contains($statusKey, 'use')) {
                                     $colorClass = 'bg-blue-100 text-blue-700';
                                     } elseif (str_contains($statusKey, 'maintenance')) {
