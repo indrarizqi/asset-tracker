@@ -11,7 +11,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
             <div class="mb-6 flex justify-between items-center">
-                <div>
+                <div class="flex gap-2">
                     <a href="{{ route('assets.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow">
                         + Add New Asset
                     </a>
