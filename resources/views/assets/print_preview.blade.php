@@ -24,7 +24,6 @@
                     </div>
 
                     <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-                        
                         <span id="selected-count" class="text-xs font-bold text-purple-700 bg-purple-50 px-3 py-2 rounded-md hidden transition-all">
                             0 Selected
                         </span>
@@ -50,100 +49,53 @@
                                 <th class="px-4 py-3 pb-4">Person In Charge & Info</th>
                                 <th class="px-4 py-3 pb-4 text-center">Category</th>
                                 <th class="px-4 py-3 pb-4 text-center">Status</th>
-                                <th class="px-4 py-3 pb-4 text-center w-24">Options</th> </tr>
+                                <th class="px-4 py-3 pb-4 text-center w-24">Options</th>
+                            </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-100">
                             @foreach($assets as $asset)
                             <tr class="hover:bg-gray-50 transition-colors duration-200">
-                                
                                 <td class="px-4 py-4 whitespace-nowrap">
-                                    <span class="font-bold text-gray-800 text-sm bg-gray-50 px-2 py-1 rounded border border-gray-200">
-                                        {{ $asset->asset_tag }}
-                                    </span>
+                                    <span class="font-bold text-gray-800 text-sm bg-gray-50 px-2 py-1 rounded border border-gray-200">{{ $asset->asset_tag }}</span>
                                 </td>
-
                                 <td class="px-4 py-4">
                                     <div class="font-bold text-gray-900 text-sm">{{ $asset->name }}</div>
                                     <div class="text-xs text-gray-400 mt-0.5 font-medium">Kondisi: {{ $asset->condition ?? 'Baik' }}</div>
                                 </td>
-
                                 <td class="px-4 py-4">
-                                    <div class="flex items-center">
-                                        <div class="ml-0">
-                                            <div class="text-sm font-medium text-gray-900">
-                                                {{ $asset->person_in_charge ?? '-' }}
-                                            </div>
-                                            <div class="text-xs text-gray-400">
-                                                {{ $asset->purchase_date ? \Carbon\Carbon::parse($asset->purchase_date)->format('Y-m-d') : '' }}
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div class="text-sm font-medium text-gray-900">{{ $asset->person_in_charge ?? '-' }}</div>
+                                    <div class="text-xs text-gray-400">{{ $asset->purchase_date ? \Carbon\Carbon::parse($asset->purchase_date)->format('Y-m-d') : '' }}</div>
                                 </td>
-
-<<<<<<< Updated upstream
-                        <div class="flex gap-2 w-full sm:w-auto sm:justify-end">
-                            <button type="button" id="selectAllBtn" onclick="toggleSelectAll()"
-                                class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded transition w-32 text-center cursor-pointer">
-                                Select All
-                            </button>
-
-                            <button type="submit" id="printSelectedBtn" disabled
-                                class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-6 rounded shadow flex items-center gap-2 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
-                                    </path>
-                                </svg>
-                                Print
-                            </button>
-                        </div>
-                    </div>
-=======
                                 <td class="px-4 py-4 text-center whitespace-nowrap">
-                                    @if(strtolower($asset->category) == 'fixed')
-                                        <span class="px-3 py-1 inline-flex text-[10px] leading-5 font-bold rounded-full bg-indigo-100 text-indigo-700 uppercase">
-                                            FIXED
-                                        </span>
-                                    @else
-                                        <span class="px-3 py-1 inline-flex text-[10px] leading-5 font-bold rounded-full bg-purple-100 text-purple-700 uppercase">
-                                            MOBILE
-                                        </span>
-                                    @endif
+                                    <span class="px-3 py-1 inline-flex text-[10px] leading-5 font-bold rounded-full {{ strtolower($asset->category) == 'fixed' ? 'bg-indigo-100 text-indigo-700' : 'bg-purple-100 text-purple-700' }} uppercase">
+                                        {{ $asset->category }}
+                                    </span>
                                 </td>
-
                                 <td class="px-4 py-4 text-center whitespace-nowrap">
                                     @php
                                         $statusKey = strtolower(str_replace(' ', '_', $asset->status));
-                                        $statusClass = 'bg-gray-100 text-gray-600 border border-gray-200'; // Default
-                                        
-                                        if (str_contains($statusKey, 'available')) {
-                                            $statusClass = 'bg-green-50 text-green-600 border border-green-200';
-                                        } elseif (str_contains($statusKey, 'maintenance')) {
-                                            $statusClass = 'bg-yellow-50 text-yellow-600 border border-yellow-200';
-                                        } elseif (str_contains($statusKey, 'use')) {
-                                            $statusClass = 'bg-blue-50 text-blue-600 border border-blue-200';
-                                        }
+                                        $statusClass = 'bg-gray-100 text-gray-600 border border-gray-200';
+                                        if (str_contains($statusKey, 'available')) $statusClass = 'bg-green-50 text-green-600 border border-green-200';
+                                        elseif (str_contains($statusKey, 'maintenance')) $statusClass = 'bg-yellow-50 text-yellow-600 border border-yellow-200';
+                                        elseif (str_contains($statusKey, 'use')) $statusClass = 'bg-blue-50 text-blue-600 border border-blue-200';
                                     @endphp
                                     <span class="px-3 py-1 inline-flex text-[10px] leading-5 font-bold rounded-full uppercase {{ $statusClass }}">
                                         {{ str_replace('_', ' ', $asset->status) }}
                                     </span>
                                 </td>
->>>>>>> Stashed changes
-
                                 <td class="px-4 py-4 text-center whitespace-nowrap">
-                                    <input type="checkbox" value="{{ $asset->id }}" 
-                                        class="asset-checkbox w-5 h-5 rounded border-gray-300 text-gray-800 shadow-sm focus:border-gray-300 focus:ring focus:ring-gray-200 focus:ring-opacity-50 cursor-pointer transition-transform hover:scale-110">
+                                    <input type="checkbox" value="{{ $asset->id }}" class="asset-checkbox w-5 h-5 rounded border-gray-300 text-gray-800 shadow-sm focus:border-gray-300 focus:ring focus:ring-gray-200 focus:ring-opacity-50 cursor-pointer transition-transform hover:scale-110">
                                 </td>
-
                             </tr>
                             @endforeach
-                            </tbody>
-                        </table>
-                    </div> </div> <div class="mt-8 flex justify-center">
-                    {{ $assets->links('pagination.custom') }}
+                        </tbody>
+                    </table>
                 </div>
 
+            </div> <div class="mt-8 flex justify-center">
+                {{ $assets->links('pagination.custom') }}
             </div>
+
         </div>
     </div>
 
@@ -159,7 +111,6 @@
 
             checkboxes.forEach(cb => {
                 if (selectedAssets.includes(cb.value)) cb.checked = true;
-
                 cb.addEventListener('change', function() {
                     if (this.checked) {
                         if (!selectedAssets.includes(this.value)) selectedAssets.push(this.value);
@@ -172,7 +123,6 @@
 
             btnSelectAll.addEventListener('click', function() {
                 const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-                
                 if (allChecked) {
                     checkboxes.forEach(cb => {
                         cb.checked = false;
@@ -205,8 +155,6 @@
                     btnPrint.disabled = true;
                     btnPrint.classList.add('opacity-50', 'cursor-not-allowed');
                 }
-
-                // Update Text Tombol Select All
                 const allCheckedNow = checkboxes.length > 0 && Array.from(checkboxes).every(cb => cb.checked);
                 btnSelectAll.textContent = allCheckedNow ? "Deselect All" : "Select All";
             }

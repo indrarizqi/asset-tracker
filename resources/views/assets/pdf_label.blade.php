@@ -89,7 +89,7 @@
 
         .company-name {
             font-size: 26px;
-            font-weight: 900;
+            font-weight: bold;
             text-transform: uppercase;
             color: #000;
             line-height: 0.85;
