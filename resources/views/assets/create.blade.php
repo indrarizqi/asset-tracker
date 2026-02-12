@@ -51,6 +51,11 @@
                             <input type="text" name="person_in_charge" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="GA Staff / Bang Alam">
                         </div>
 
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Keterangan</label>
+                            <textarea required name="description" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Keterangan"></textarea>
+                        </div>
+
                         <div class="flex items-center justify-between mt-6">
                             <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                 Simpan

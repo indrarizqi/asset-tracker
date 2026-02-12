@@ -43,6 +43,7 @@
                                 <th class="px-6 py-4">Person In Charge & Info</th>
                                 <th class="px-6 py-4 text-center">Asset Category</th>
                                 <th class="px-6 py-4 text-center">Status</th>
+                                <th class="px-6 py-4 text-center">Condition</th>
                                 <th class="px-6 py-4 rounded-tr-xl text-center">Actions</th>
                             </tr>
                         </thead>
@@ -120,6 +121,10 @@
                                         class="inline-block px-3 py-1 text-[11px] font-extrabold uppercase tracking-wider rounded-full {{ $colorClass }}">
                                         {{ str_replace('_', ' ', $asset->status) }}
                                     </span>
+                                </td>
+
+                                <td class="px-6 py-4">
+                                    {{ $asset->description }}
                                 </td>
 
                                 <td class="px-6 py-4 text-center">

@@ -20,6 +20,7 @@ class AssetController extends Controller
         $request->validate([
             'name' => 'required',
             'category' => 'required|in:mobile,semi-mobile,fixed',
+            'description' => 'required',
         ]);
 
         $prefix = match($request->category) {
@@ -49,7 +50,7 @@ class AssetController extends Controller
             'purchase_date' => $request->purchase_date,
             'condition' => $request->condition,
             'person_in_charge' => $request->person_in_charge,
-            
+            'description' => $request->description,
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Aset berhasil ditambah: ' . $newTag . ' (' . ucfirst($status) . ')');

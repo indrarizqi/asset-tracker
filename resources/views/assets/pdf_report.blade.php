@@ -89,6 +89,7 @@
                 <th width="20%">Penanggung Jawab / Info</th>
                 <th width="10%">Kondisi</th>
                 <th width="10%">Status</th>
+                <th width="10%">Keterangan</th>
             </tr>
         </thead>
         <tbody>
@@ -108,6 +109,7 @@
                 ($asset->status == 'in_use' ? 'status-used' : 'status-broken') }}">
                             {{ ucfirst(str_replace('_', ' ', $asset->status)) }}
                         </td>
+                        <td>{{ $asset->description ?? '-' }}</td>
                     </tr>
             @endforeach
         </tbody>
