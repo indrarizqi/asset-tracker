@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Data Aset VODECO</title>
+    <title>Assets Report</title>
     <style>
         body { font-family: sans-serif; font-size: 12px; }
         .header { text-align: center; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
@@ -65,9 +65,9 @@
     </table>
 
     <div class="footer">
-        <p>Semarang, {{ date('d F Y') }}</p>
+        <p>Tegal, {{ date('d F Y') }}</p>
         <br><br><br>
-        <p><strong>( {{ Auth::user()->name }} )</strong><br>Super Admin</p>
+        <p><strong>( {{ Auth::user()->name }} )</strong><br>HR Vodeco</p>
     </div>
 
 </body>

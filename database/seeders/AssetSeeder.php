@@ -16,6 +16,7 @@ class AssetSeeder extends Seeder
             'purchase_date' => '2026-02-06',
             'category' => 'Mobile',
             'status' => 'available',
+            'condition' => 'Baik',
         ]);
 
         Asset::create([
@@ -25,6 +26,7 @@ class AssetSeeder extends Seeder
             'purchase_date' => '2026-02-06',
             'category' => 'Mobile',
             'status' => 'maintenance',
+            'condition' => 'Rusak',
         ]);
 
         Asset::create([
@@ -34,6 +36,7 @@ class AssetSeeder extends Seeder
             'purchase_date' => '2026-02-07',
             'category' => 'Mobile',
             'status' => 'in_use',
+            'condition' => 'Baik',
         ]);
 
         Asset::create([
@@ -43,6 +46,7 @@ class AssetSeeder extends Seeder
             'purchase_date' => '2026-02-09',
             'category' => 'Semi-mobile',
             'status' => 'available',
+            'condition' => 'Baik',
         ]);
     }
 }

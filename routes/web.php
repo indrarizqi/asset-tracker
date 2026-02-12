@@ -5,7 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-// Halaman Depan (Login)
+// Login
 Route::get('/', function () {
     return view('auth.login');
 });
@@ -16,7 +16,7 @@ Route::get('/dashboard', [AssetController::class, 'index'])->middleware(['auth',
 // --- GRUP ROUTE YANG WAJIB LOGIN ---
 Route::middleware('auth')->group(function () {
 
-    // Fitur Asset Tracking (Operator & Admin)
+    // Fitur Asset Tracking (Semua Role)
     Route::get('/assets/create', [AssetController::class, 'create'])->name('assets.create');
     Route::post('/assets/store', [AssetController::class, 'store'])->name('assets.store');
     Route::get('/assets/print', [AssetController::class, 'printPreview'])->name('assets.print');

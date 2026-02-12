@@ -143,7 +143,7 @@ class AssetController extends Controller
         $pdf->setPaper('a4', 'landscape');
         
         // Download file
-        return $pdf->stream('Laporan-Aset-Vodeco.pdf');
+        return $pdf->stream('Vodeco.pdf');
     }
 
     public function index()
