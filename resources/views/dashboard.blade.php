@@ -43,7 +43,7 @@
                                 <th class="px-6 py-4">Person In Charge & Info</th>
                                 <th class="px-6 py-4 text-center">Asset Category</th>
                                 <th class="px-6 py-4 text-center">Status</th>
-                                <th class="px-6 py-4 text-center">Condition</th>
+                                <th class="px-6 py-4 text-center">description</th>
                                 <th class="px-6 py-4 rounded-tr-xl text-center">Actions</th>
                             </tr>
                         </thead>

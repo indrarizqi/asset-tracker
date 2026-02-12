@@ -112,13 +112,15 @@ class AssetController extends Controller
         $request->validate([
             'name' => 'required',
             'status' => 'required',
+            'description' => 'required',
         ]);
 
         $asset = Asset::findOrFail($id);
         $asset->update([
             'name' => $request->name,
-            'category' => $request->category, // Kategori boleh diedit
-            'status' => $request->status,     // Status boleh diedit manual admin
+            'category' => $request->category,
+            'status' => $request->status,
+            'description' => $request->description
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Data aset berhasil diperbarui!');

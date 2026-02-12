@@ -12,12 +12,12 @@
                     @csrf
                     @method('PUT') <div class="mb-4">
                         <label class="block text-gray-700 font-bold mb-2">Nama Aset</label>
-                        <input type="text" name="name" value="{{ $asset->name }}" class="w-full border rounded py-2 px-3 text-gray-700">
+                        <input type="text" name="name" value="{{ $asset->name }}" class="w-full border rounded border-gray-300 py-2 px-3 text-gray-700">
                     </div>
 
                     <div class="mb-4">
                         <label class="block text-gray-700 font-bold mb-2">Kategori Aset</label>
-                        <select name="category" class="w-full border rounded py-2 px-3 text-gray-700">
+                        <select name="category" class="w-full border rounded border-gray-300 py-2 px-3 text-gray-700">
                             <option value="mobile" {{ $asset->category == 'mobile' ? 'selected' : '' }}>Mobile Asset</option>
                             <option value="semi-mobile" {{ $asset->category == 'semi-mobile' ? 'selected' : '' }}>Semi-Mobile</option>
                             <option value="fixed" {{ $asset->category == 'fixed' ? 'selected' : '' }}>Fixed Asset</option>
@@ -26,7 +26,7 @@
 
                     <div class="mb-4">
                         <label class="block text-sm font-bold text-gray-700 mb-2">Kondisi Fisik</label>
-                        <select name="condition" class="w-full border-gray-300 rounded-lg focus:ring-purple-500 focus:border-purple-500">
+                        <select name="condition" class="w-full border rounded border-gray-300 py-2 px-3 text-gray-700">
                             <option value="Baik" {{ (isset($asset) && $asset->condition == 'Baik') ? 'selected' : '' }}>
                                 Baik
                             </option>
@@ -43,12 +43,17 @@
 
                     <div class="mb-4">
                         <label class="block text-gray-700 font-bold mb-2">Status</label>
-                        <select name="status" class="w-full border rounded py-2 px-3 text-gray-700">
+                        <select name="status" class="w-full border rounded border-gray-300 py-2 px-3 text-gray-700">
                             <option value="available" {{ $asset->status == 'available' ? 'selected' : '' }}>Available</option>
                             <option value="in_use" {{ $asset->status == 'in_use' ? 'selected' : '' }}>In Use</option>
                             <option value="maintenance" {{ $asset->status == 'maintenance' ? 'selected' : '' }}>Maintenance</option>
                             <option value="broken" {{ $asset->status == 'broken' ? 'selected' : '' }}>Broken</option>
                         </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block" for="description">Deskripsi</label>
+                        <textarea name="description" id="description" class="w-full border rounded border-gray-300 py-2 px-3 text-gray-700">{{ $asset->description }}</textarea>
                     </div>
 
                     <button type="submit" class="bg-blue-600 text-white font-bold py-2 px-4 rounded">Update Aset</button>
