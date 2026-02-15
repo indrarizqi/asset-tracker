@@ -52,7 +52,7 @@
                 </td>
 
                 <td class="px-4 py-4 text-center whitespace-nowrap">
-                    <span class="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-gradient-to-r from-blue-500 to-purple-500 text-white shadow-sm">
+                    <span class="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-linear-to-r from-blue-500 to-purple-500 text-white shadow-sm">
                         {{ $asset->category }}
                     </span>
                 </td>
@@ -71,7 +71,7 @@
                     </span>
                 </td>
 
-                <td class="px-4 py-4 text-sm text-gray-600 truncate max-w-[150px]" title="{{ $asset->description }}">
+                <td class="px-4 py-4 text-sm text-gray-600 truncate max-w-37.5" title="{{ $asset->description }}">
                     {{ $asset->description }}
                 </td>
                 

@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="title">Edit Asset</x-slot>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit Aset: {{ $asset->asset_tag }}</h2>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Edit Aset : {{ $asset->name }}</h2>
     </x-slot>
 
     <div class="py-12">
@@ -11,7 +11,7 @@
                 <form action="{{ route('assets.update', $asset->id) }}" method="POST">
                     @csrf
                     @method('PUT') <div class="mb-4">
-                        <label class="block text-gray-700 font-bold mb-2">Nama Aset</label>
+                        <label class="block text-gray-700 font-bold mb-2">Asset Name</label>
                         <input type="text" name="name" value="{{ $asset->name }}" class="w-full border rounded border-gray-300 py-2 px-3 text-gray-700">
                     </div>
 
