@@ -6,11 +6,21 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-12" x-data="{ 
+        showAssetModal: false, 
+        asset: { 
+            id: '', 
+            name: '', 
+            pic: '', 
+            category: '', 
+            status: '', 
+            description: '', 
+            edit_url: '' 
+        } 
+    }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-center gap-4 border border-gray-100">
-    
                 <div class="w-full sm:w-1/2 relative">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -39,9 +49,88 @@
                 </div> 
             </div>
         </div>
-    </div>
 
-    <script>
+        <div x-show="showAssetModal" 
+            style="display: none;"
+            class="fixed inset-0 z-50 overflow-y-auto" 
+            aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            
+            <div x-show="showAssetModal"
+                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+                 class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-blur-sm" 
+                 @click="showAssetModal = false"></div>
+
+            <div class="flex items-center justify-center min-h-screen p-4 text-center sm:p-0">
+                <div x-show="showAssetModal"
+                     x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                     x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                     class="relative bg-white rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:max-w-lg w-full border border-gray-100">
+                    
+                    <div class="bg-gray-50 px-5 py-4 border-b border-gray-100 flex justify-between items-center">
+                        <h3 class="text-lg leading-6 font-extrabold text-gray-900 flex items-center gap-2" id="modal-title">
+                            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                            Asset Details
+                        </h3>
+                        <button @click="showAssetModal = false" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
+                            <span class="sr-only">Close</span>
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                        </button>
+                    </div>
+
+                    <div class="px-6 py-6">
+                        <div class="grid grid-cols-1 gap-y-4">
+                            
+                            <div class="flex items-center gap-4 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                                <div class="flex-shrink-0 h-14 w-14 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                                    <span x-text="asset.id.substring(0,2).toUpperCase()"></span>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-bold text-indigo-400 uppercase tracking-wider" x-text="asset.id"></p>
+                                    <p class="text-lg font-bold text-gray-900 leading-tight" x-text="asset.name"></p>
+                                </div>
+                            </div>
+
+                            <div class="bg-white border border-gray-200 rounded-lg p-0 divide-y divide-gray-100">
+                                <div class="flex flex-col sm:flex-row sm:justify-between px-4 py-3">
+                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 sm:mb-0">Person in Charge</span>
+                                    <span class="text-sm font-bold text-gray-900 flex items-center gap-1.5">
+                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                        <span x-text="asset.pic"></span>
+                                    </span>
+                                </div>
+                                <div class="flex justify-between px-4 py-3">
+                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Category</span>
+                                    <span class="px-2 py-1 text-[10px] font-bold rounded-full bg-purple-100 text-purple-700 uppercase" x-text="asset.category"></span>
+                                </div>
+                                <div class="flex justify-between px-4 py-3">
+                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status</span>
+                                    <span class="px-2 py-1 text-[10px] font-bold rounded-full bg-blue-100 text-blue-700 uppercase" x-text="asset.status"></span>
+                                </div>
+                                <div class="flex flex-col px-4 py-3 bg-gray-50/50 rounded-b-lg">
+                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Description</span>
+                                    <p class="text-sm text-gray-600 leading-relaxed" x-text="asset.description || '-'"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3 border-t border-gray-100">
+                        <a :href="asset.edit_url" 
+                           class="inline-flex justify-center rounded-lg border border-transparent shadow-sm px-5 py-2.5 bg-indigo-600 text-sm font-bold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                           <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                           Edit Asset
+                        </a>
+                        <button @click="showAssetModal = false" type="button" 
+                                class="inline-flex justify-center rounded-lg border border-gray-300 shadow-sm px-5 py-2.5 bg-white text-sm font-bold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div> <script>
         document.addEventListener('DOMContentLoaded', function () {
             
             const searchInput = document.getElementById('search-input');
@@ -74,8 +163,6 @@
                 .then(response => response.text())
                 .then(html => {
                     tableContainer.innerHTML = html;
-                    // TIDAK PERLU lagi memanggil initDeleteListener() disini
-                    // karena app.blade.php sudah menanganinya secara otomatis via Event Delegation
                 })
                 .catch(error => console.error('Error:', error));
             }

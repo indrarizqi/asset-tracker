@@ -77,10 +77,20 @@
                 
                 <td class="px-4 py-4 text-center whitespace-nowrap">
                     <div class="flex items-center justify-center gap-2">
-                        <a href="{{ route('assets.edit', $asset->id) }}" title="Edit Aset"
-                            class="p-2 text-blue-500 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-lg transition-all duration-200 shadow-sm border border-blue-100">
+                        <button type="button"
+                            @click="showAssetModal = true; asset = {
+                                id: '{{ $asset->asset_id }}',
+                                name: '{{ addslashes($asset->name) }}',
+                                pic: '{{ addslashes($asset->person_in_charge) }}',
+                                category: '{{ $asset->category }}',
+                                status: '{{ $asset->status }}',
+                                description: '{{ addslashes(trim(preg_replace('/\s+/', ' ', $asset->description))) }}',
+                                edit_url: '{{ route('assets.edit', $asset->id) }}'
+                            }"
+                            class="p-2 text-blue-500 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-lg transition-all duration-200 shadow-sm border border-blue-100" 
+                            title="View Details & Edit">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                        </a>
+                        </button>
 
                         <form action="{{ route('assets.destroy', $asset->id) }}" method="POST" class="inline m-0 p-0 form-delete">
                             @csrf
