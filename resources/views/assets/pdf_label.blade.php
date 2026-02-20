@@ -131,7 +131,7 @@
                         <table class="inner-table">
                             <tr>
                                 <td class="td-qr">
-                                    <img class="qr-img" src="data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(120)->margin(0)->generate($asset->asset_tag)) }}">
+                                    <img class="qr-img" src="data:image/png;base64, {{ base64_encode(SimpleSoftwareIO\QrCode\Facades\QrCode::class::format('png')->size(120)->margin(0)->generate($asset->asset_tag)) }}">
                                 </td>
 
                                 <td class="td-text">

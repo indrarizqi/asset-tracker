@@ -145,7 +145,7 @@ class AssetController extends Controller
         }
 
         // Load view PDF
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('assets.pdf_label', compact('assets'));
+        $pdf = pdf::loadView('assets.pdf_label', compact('assets'));
         
         // Set ukuran kertas custom (contoh: ukuran label sticker) atau A4
         $pdf->setPaper('a4', 'portrait');

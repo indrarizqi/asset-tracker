@@ -49,7 +49,7 @@
         </div>
     </div>
 
-    <div id="modal-action" class="fixed inset-0 bg-black bg-opacity-50 flex items-end hidden z-50">
+    <div id="modal-action" class="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
         <div class="bg-white w-full rounded-t-2xl p-6 animate-bounce-up">
             <div class="flex justify-between items-start mb-4">
                 <div>
