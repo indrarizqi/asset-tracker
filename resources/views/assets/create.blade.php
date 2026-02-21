@@ -7,76 +7,89 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
+        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
+            
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl border border-gray-100">
+                <div class="p-8 bg-white">
                     
                     <form action="{{ route('assets.store') }}" method="POST">
                         @csrf
-                        
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">Nama Aset</label>
-                            <input type="text" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 border-gray-300 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Laptop Dell Latitude 7490" required>
+
+                        <div class="mb-5">
+                            <label for="name" class="block text-sm font-semibold text-gray-700 mb-1">Nama Aset*</label>
+                            <input type="text" name="name" id="name" value="{{ old('name') }}" required
+                                class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm"
+                                placeholder="Contoh: Laptop Dell Latitude 7490">
+                            @error('name') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
 
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">Kategori Aset</label>
-                            <select name="category" class="shadow border rounded w-full py-2 px-3 border-gray-300 text-gray-700 leading-tight focus:outline-none focus:shadow-outline cursor-pointer" required>
-                                <option value="" disabled selected>Pilih Kategori Aset</option>
-                                <option value="mobile">Mobile Asset (Laptop, Tablet, Tools)</option>
-                                <option value="semi-mobile">Semi-Mobile (PC, Printer, Router)</option>
-                                <option value="fixed">Fixed Asset (AC, CCTV, Meja)</option>
+                        <div class="mb-5">
+                            <label for="person_in_charge" class="block text-sm font-semibold text-gray-700 mb-1">Penanggung Jawab</label>
+                            <input type="text" name="person_in_charge" id="person_in_charge" value="{{ old('person_in_charge') }}"
+                                class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm"
+                                placeholder="Kosongkan jika tidak ada">
+                            @error('person_in_charge') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                            <div>
+                                <label for="category" class="block text-sm font-semibold text-gray-700 mb-1">Kategori Aset*</label>
+                                <select name="category" id="category" required
+                                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 cursor-pointer shadow-sm">
+                                    <option value="" disabled {{ old('category') ? '' : 'selected' }}>Pilih Kategori</option>
+                                    <option value="mobile" {{ (old('category') == 'mobile') ? 'selected' : '' }}>Mobile Asset</option>
+                                    <option value="semi-mobile" {{ (old('category') == 'semi-mobile') ? 'selected' : '' }}>Semi-Mobile</option>
+                                    <option value="fixed" {{ (old('category') == 'fixed') ? 'selected' : '' }}>Fixed Asset</option>
+                                </select>
+                                @error('category') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            </div>
+
+                            <div>
+                                <label for="status" class="block text-sm font-semibold text-gray-700 mb-1">Status*</label>
+                                <select name="status" id="status" required
+                                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 cursor-pointer shadow-sm">
+                                    <option value="" disabled {{ old('status') ? '' : 'selected' }}>Pilih Status</option>
+                                    <option value="in_use" {{ (old('status') == 'in_use') ? 'selected' : '' }}>In Use</option>
+                                    <option value="not_used" {{ (old('status') == 'not_used') ? 'selected' : '' }}>Not Used</option>
+                                    <option value="maintenance" {{ (old('status') == 'maintenance') ? 'selected' : '' }}>Maintenance</option>
+                                    <option value="broken" {{ (old('status') == 'broken') ? 'selected' : '' }}>Broken</option>
+                                </select>
+                                @error('status') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+
+                        <div class="mb-5">
+                            <label for="condition" class="block text-sm font-semibold text-gray-700 mb-1">Kondisi Fisik*</label>
+                            <select name="condition" id="condition" required
+                                class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 cursor-pointer shadow-sm">
+                                <option value="Baik" {{ (old('condition') == 'Baik') ? 'selected' : '' }}>Baik</option>
+                                <option value="Rusak" {{ (old('condition') == 'Rusak') ? 'selected' : '' }}>Rusak</option>
+                                <option value="Rusak Total" {{ (old('condition') == 'Rusak Total') ? 'selected' : '' }}>Rusak Total</option>
                             </select>
+                            @error('condition') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label class="block text-gray-700 text-sm font-bold mb-2">Tanggal Pembelian / Masuk</label>
-                                <input type="date" name="purchase_date" class="shadow appearance-none border rounded w-full py-2 px-3 border-gray-300 text-gray-700 leading-tight focus:outline-none focus:shadow-outline cursor-pointer" required>
-                            </div>
-
-                            <div>
-                                <label for="status">Status</label>
-                                <select name="status" class="shadow border rounded w-full py-2 px-3 border-gray-300 text-gray-700 leading-tight focus:outline-none focus:shadow-outline cursor-pointer" required>
-                                    <option value="" disabled selected>Pilih Status</option>
-                                    <option value="in_use">In Use</option>
-                                    <option value="broken">Broken</option>
-                                    <option value="maintenance">Maintenance</option>
-                                    <option value="not_used">Not Used</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-gray-700 text-sm font-bold mb-2">Kondisi Awal</label>
-                                <select name="condition" class="shadow border rounded w-full py-2 px-3 border-gray-300 text-gray-700 leading-tight focus:outline-none focus:shadow-outline cursor-pointer" required>
-                                    <option value="" disabled selected>Pilih Kondisi</option>
-                                    <option value="Baik">Baik</option>
-                                    <option value="Rusak Ringan">Rusak Ringan</option>
-                                    <option value="Rusak Berat">Rusak Berat</option>
-                                </select>
-                            </div>
+                        <div class="mb-8">
+                            <label for="description" class="block text-sm font-semibold text-gray-700 mb-1">Keterangan*</label>
+                            <textarea name="description" id="description" rows="4" required
+                                class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm"
+                                placeholder="Tambahkan deskripsi atau keterangan detail mengenai aset ini...">{{ old('description') }}</textarea>
+                            @error('description') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
 
-                        <div class="mb-6">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">Penanggung Jawab</label>
-                            <input type="text" name="person_in_charge" class="shadow appearance-none border rounded w-full py-2 px-3 border-gray-300 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Kosongkan jika tidak ada">
-                        </div>
-
-                        <div class="mb-6">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">Keterangan</label>
-                            <textarea required name="description" class="shadow appearance-none border rounded w-full py-2 px-3 border-gray-300 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Keterangan"></textarea>
-                        </div>
-
-                        <div class="flex items-center justify-between mt-6">
-                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline cursor-pointer">
-                                Simpan
+                        <div class="flex items-center gap-3 pt-2 border-t border-gray-100 mt-6">
+                            <button type="submit" 
+                                class="inline-flex items-center px-6 py-2.5 bg-indigo-600 border border-transparent rounded-lg font-bold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-md">
+                                Simpan Aset
                             </button>
-                            <a href="{{ route('dashboard') }}" class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800">
+
+                            <a href="{{ route('dashboard') }}" 
+                                class="inline-flex items-center px-6 py-2.5 bg-gray-500 border border-transparent rounded-lg font-bold text-xs text-white uppercase tracking-widest hover:bg-gray-600 focus:bg-gray-600 active:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm">
                                 Batal
                             </a>
                         </div>
-                    </form>
 
+                    </form>
                 </div>
             </div>
         </div>

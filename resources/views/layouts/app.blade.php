@@ -167,7 +167,11 @@
                                 popup: 'animate__animated animate__zoomOut faster'
                             }
                         }).then((result) => {
-                            if (result.isConfirmed) e.target.submit();
+                            if (result.isConfirmed) {
+                                // Hapus memori keranjang cetak QR sebelum keluar
+                                localStorage.removeItem('selectedAssets');
+                                e.target.submit();
+                            }
                         });
                     }
 
