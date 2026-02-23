@@ -60,6 +60,6 @@
 
 @if ($assets->hasPages())
     <div class="mt-2 px-1">
-        {{ $assets->links() }} 
+        {{ $assets->links('pagination.custom') }} 
         </div>
 @endif
