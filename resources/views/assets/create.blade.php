@@ -69,6 +69,13 @@
                             @error('condition') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
 
+                        <div class="mb-5">
+                            <label for="purchase_date" class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Pembelian*</label>
+                            <input type="date" name="purchase_date" id="purchase_date" value="{{ old('purchase_date') }}" required
+                                class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm">
+                            @error('purchase_date') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                        </div>
+
                         <div class="mb-8">
                             <label for="description" class="block text-sm font-semibold text-gray-700 mb-1">Keterangan*</label>
                             <textarea name="description" id="description" rows="4" required

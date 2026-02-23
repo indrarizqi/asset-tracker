@@ -22,6 +22,8 @@ class AssetController extends Controller
             'category' => 'required|in:mobile,semi-mobile,fixed',
             'description' => 'required',
             'status' => 'required|in:in_use,maintenance,broken,not_used',
+            'purchase_date' => 'required',
+            'condition' => 'required',
         ]);
 
         $prefix = match($request->category) {
@@ -42,8 +44,7 @@ class AssetController extends Controller
             'name' => $request->name,
             'category' => $request->category,
             'asset_tag' => $newTag,
-            'status' => $status,
-            
+            'status' => $status,            
             'purchase_date' => $request->purchase_date,
             'condition' => $request->condition,
             'person_in_charge' => $request->person_in_charge,
@@ -66,6 +67,8 @@ class AssetController extends Controller
             'category' => 'required|in:mobile,semi-mobile,fixed',
             'description' => 'required',
             'status' => 'required|in:in_use,maintenance,broken,not_used',
+            'purchase_date' => 'required',
+            'condition' => 'required',
         ]);
 
         $asset = Asset::findOrFail($id);
@@ -73,7 +76,10 @@ class AssetController extends Controller
             'name' => $request->name,
             'category' => $request->category,
             'status' => $request->status,
-            'description' => $request->description
+            'description' => $request->description,
+            'purchase_date' => $request->purchase_date,
+            'condition' => $request->condition,
+            'person_in_charge' => $request->person_in_charge,
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Data Aset Berhasil Diperbarui!');
