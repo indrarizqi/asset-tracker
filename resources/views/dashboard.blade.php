@@ -43,8 +43,11 @@
                 </div>
             </div>
 
-            <div id="table-container" class="w-full flex flex-col gap-4">
-                @include('assets.partials.table') </div>
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                <div id="table-container" class="overflow-x-auto bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] pb-4">
+                    @include('assets.partials.table')
+                </div> 
+            </div>
         </div>
 
         <div x-show="showAssetModal" 
@@ -116,7 +119,7 @@
                         <a :href="asset.edit_url" 
                            class="inline-flex justify-center rounded-lg border border-transparent shadow-sm px-5 py-2.5 bg-indigo-600 text-sm font-bold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                           Edit
+                           Edit Asset
                         </a>
                         <button @click="showAssetModal = false" type="button" 
                                 class="inline-flex justify-center rounded-lg border border-gray-300 shadow-sm px-5 py-2.5 bg-white text-sm font-bold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
