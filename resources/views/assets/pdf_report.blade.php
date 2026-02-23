@@ -118,7 +118,7 @@
     <div class="footer">
         <p>Tegal, {{ date('d F Y') }}</p>
         <br><br><br>
-        <p><strong>( {{ Auth::user()->name }} )</strong><br>HR Vodeco</p>
+        <p><strong>( {{ Auth::user()->name }} )</strong><br></p>
     </div>
 
 </body>

@@ -40,10 +40,8 @@
                 </div>
             </div>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div id="table-container" class="overflow-x-auto bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)]">
-                    @include('assets.partials.print-table')
-                </div>
+            <div id="table-container" class="w-full flex flex-col gap-4">
+                @include('assets.partials.table')
             </div>
 
         </div>
