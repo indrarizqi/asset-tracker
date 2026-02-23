@@ -41,7 +41,7 @@
             </div>
 
             <div id="table-container" class="w-full flex flex-col gap-4">
-                @include('assets.partials.table')
+                @include('assets.partials.print-table')
             </div>
 
         </div>
