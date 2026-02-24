@@ -30,13 +30,16 @@
 
                     <div class="mb-6">
                         <label class="block font-bold mb-1">Role</label>
-                        <select name="role" class="w-full border rounded p-2">
+                        <select name="role" class="w-full border rounded p-2 cursor-pointer">
                             <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
                             <option value="super_admin" {{ $user->role == 'super_admin' ? 'selected' : '' }}>Super Admin</option>
                         </select>
                     </div>
 
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded font-bold">Update User</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded font-bold cursor-pointer">Update User</button>
+                    <button class="bg-gray-500 text-white px-4 py-2 rounded font-bold cursor-pointer">
+                        <a href="{{ route('users.index') }}">Back</a>
+                    </button>
                 </form>
             </div>
         </div>

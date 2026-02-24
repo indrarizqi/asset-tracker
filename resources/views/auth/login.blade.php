@@ -31,7 +31,7 @@
         </div>
 
         <button type="submit" 
-            class="w-full py-3 px-4 rounded-lg text-white font-bold text-sm tracking-wide bg-linear-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 focus:ring-4 focus:ring-purple-300 transition-all shadow-md">
+            class="w-full py-3 px-4 rounded-lg text-white font-bold text-sm tracking-wide bg-linear-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 focus:ring-4 focus:ring-purple-300 transition-all shadow-md cursor-pointer">
             Sign In
         </button>
     </form>

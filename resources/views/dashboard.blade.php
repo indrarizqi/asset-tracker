@@ -69,7 +69,7 @@
                             <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
                             Asset Details
                         </h3>
-                        <button @click="showAssetModal = false" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors">
+                        <button @click="showAssetModal = false" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors cursor-pointer">
                             <span class="sr-only">Close</span>
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                         </button>
@@ -79,7 +79,7 @@
                         <div class="grid grid-cols-1 gap-y-4">
                             
                             <div class="flex items-center gap-4 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
-                                <div class="flex-shrink-0 h-14 w-14 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
+                                <div class="shrink-0 h-14 w-14 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
                                     <span x-text="asset.id.substring(0,2).toUpperCase()"></span>
                                 </div>
                                 <div>
@@ -119,7 +119,7 @@
                            Edit
                         </a>
                         <button @click="showAssetModal = false" type="button" 
-                                class="inline-flex justify-center rounded-lg border border-gray-300 shadow-sm px-5 py-2.5 bg-white text-sm font-bold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                                class="inline-flex justify-center rounded-lg border border-gray-300 shadow-sm px-5 py-2.5 bg-white text-sm font-bold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors cursor-pointer">
                             Cancel
                         </button>
                     </div>

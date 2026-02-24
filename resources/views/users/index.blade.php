@@ -68,7 +68,7 @@
                                                 updated: '{{ $user->updated_at->format('d M Y, H:i') }}',
                                                 edit_url: '{{ route('users.edit', $user->id) }}'
                                             }"
-                                            class="p-2 text-blue-500 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-lg transition-all duration-200 shadow-sm border border-blue-100" 
+                                            class="p-2 text-blue-500 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-lg transition-all duration-200 shadow-sm border border-blue-100 cursor-pointer" 
                                             title="View Details">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -128,7 +128,7 @@
                         <h3 class="text-lg leading-6 font-bold text-gray-900" id="modal-title">
                             User Details
                         </h3>
-                        <button @click="showModal = false" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                        <button @click="showModal = false" class="text-gray-400 cursor-pointer hover:text-gray-500 focus:outline-none">
                             <span class="sr-only">Close</span>
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -183,7 +183,7 @@
                         </a>
 
                         <button @click="showModal = false" type="button" 
-                                class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm">
+                                class="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:text-sm cursor-pointer">
                             Cancel
                         </button>
                     </div>
