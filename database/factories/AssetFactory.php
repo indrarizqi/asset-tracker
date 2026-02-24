@@ -32,8 +32,8 @@ class AssetFactory extends Factory
         $sequence = fake()->unique()->numberBetween(1, 999);
         $assetTag = sprintf("%s-%s-%03d", $prefix, $year, $sequence);
 
-        $statuses = ['in_use', 'maintenance', 'broken', 'not_used'];
-        $conditions = ['Baik', 'Rusak Ringan', 'Rusak Berat'];
+        $statuses = ['in_use', 'maintenance', 'broken', 'available'];
+        $conditions = ['Baik', 'Rusak Ringan', 'Rusak Total'];
 
         return [
             'asset_tag' => $assetTag,
@@ -92,7 +92,7 @@ class AssetFactory extends Factory
     }
 
     /**
-     * State: Asset dengan status in_use
+     * State: Asset dengan status in use
      */
     public function inUse(): static
     {
@@ -118,7 +118,7 @@ class AssetFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'status' => 'broken',
-            'condition' => 'Rusak Berat',
+            'condition' => 'Rusak total',
         ]);
     }
 }

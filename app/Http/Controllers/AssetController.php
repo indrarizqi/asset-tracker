@@ -21,7 +21,7 @@ class AssetController extends Controller
             'name' => 'required',
             'category' => 'required|in:mobile,semi-mobile,fixed',
             'description' => 'required',
-            'status' => 'required|in:in_use,maintenance,broken,not_used',
+            'status' => 'required|in:in_use,maintenance,broken,available',
             'purchase_date' => 'required',
             'condition' => 'required',
         ]);
@@ -66,7 +66,7 @@ class AssetController extends Controller
             'name' => 'required',
             'category' => 'required|in:mobile,semi-mobile,fixed',
             'description' => 'required',
-            'status' => 'required|in:in_use,maintenance,broken,not_used',
+            'status' => 'required|in:in_use,maintenance,broken,available',
             'purchase_date' => 'required',
             'condition' => 'required',
         ]);

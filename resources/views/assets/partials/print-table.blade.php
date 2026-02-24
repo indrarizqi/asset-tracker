@@ -1,55 +1,85 @@
 <div class="bg-white overflow-hidden sm:rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-gray-100">
     <div class="overflow-x-auto">
         <table class="min-w-full text-left border-collapse">
+            
             <thead>
-                <tr class="text-gray-400 text-[11px] font-bold uppercase tracking-wider border-b border-gray-100">
-                    <th class="px-6 py-4 text-center w-16">No</th>
-                    <th class="px-6 py-4">Asset ID</th>
-                    <th class="px-6 py-4">Asset Name</th>
-                    <th class="px-6 py-4 text-center">Category</th>
-                    <th class="px-6 py-4 text-center">Status</th>
-                    <th class="px-6 py-4">Description</th>
-                    <th class="px-6 py-4 text-center w-24">Options</th> 
+                <tr class="bg-gray-50/80 text-gray-500 text-[11px] font-extrabold uppercase tracking-wider border-b border-gray-100">
+                    <th class="px-4 py-4 w-10 text-center">No</th>
+                    <th class="px-4 py-4 whitespace-nowrap">Asset ID</th>
+                    <th class="px-4 py-4">Asset Name</th>
+                    <th class="px-4 py-4 text-center">Category</th>
+                    <th class="px-4 py-4 text-center">Condition</th>
+                    <th class="px-4 py-4 text-center">Status</th>
+                    <th class="px-4 py-4">Description</th>
+                    <th class="px-4 py-4 text-center w-24">Option</th> 
                 </tr>
             </thead>
+            
             <tbody class="bg-white divide-y divide-gray-50">
                 @if($assets->count() > 0)
                     @foreach($assets as $asset)
-                    <tr class="hover:bg-gray-50 transition-colors duration-200 group">
-                        <td class="px-6 py-4 text-center text-sm text-gray-400 font-medium">
+                    <tr class="hover:bg-blue-50/40 transition-colors duration-200 group">
+                        
+                        <td class="px-4 py-4 text-sm text-gray-400 font-medium text-center">
                             {{ ($assets->currentPage() - 1) * $assets->perPage() + $loop->iteration }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="font-bold text-gray-800 text-sm font-mono bg-gray-100 px-2 py-1 rounded">{{ $asset->asset_tag }}</span>
+                        
+                        <td class="px-4 py-4 whitespace-nowrap">
+                            <span class="font-mono font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded-md text-sm group-hover:bg-white transition">
+                                {{ $asset->asset_tag ?? $asset->id }}
+                            </span>
                         </td>
-                        <td class="px-6 py-4">
+                        
+                        <td class="px-4 py-4">
                             <div class="font-bold text-gray-900 text-sm">{{ $asset->name }}</div>
-                            <div class="text-[11px] text-gray-400 mt-0.5">Kondisi: {{ $asset->condition ?? 'Baik' }}</div>
                         </td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
-                            <span class="px-3 py-1 inline-flex text-[10px] leading-5 font-bold rounded-full bg-indigo-100 text-indigo-700 uppercase">{{ $asset->category }}</span>
+                        
+                        <td class="px-4 py-4 text-center whitespace-nowrap">
+                            <span class="inline-block px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full bg-linear-to-r from-blue-500 to-purple-500 text-white shadow-sm">
+                                {{ $asset->category }}
+                            </span>
                         </td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
+
+                        <td class="px-4 py-4 text-center whitespace-nowrap">
+                            @php
+                                $condClass = 'bg-gray-50 text-gray-600 border border-gray-100';
+                                $condKey = strtolower($asset->condition ?? '');
+                                if (str_contains($condKey, 'baik')) $condClass = 'bg-teal-50 text-teal-600 border border-teal-100';
+                                elseif (str_contains($condKey, 'total')) $condClass = 'bg-red-100 text-red-700 border border-red-200';
+                                elseif (str_contains($condKey, 'rusak')) $condClass = 'bg-orange-50 text-orange-600 border border-orange-100';
+                            @endphp
+                            <span class="px-3 py-1 inline-flex text-[10px] leading-5 font-bold rounded-full uppercase {{ $condClass }}">
+                                {{ $asset->condition ?? '-' }}
+                            </span>
+                        </td>
+                        
+                        <td class="px-4 py-4 text-center whitespace-nowrap">
                             @php
                                 $statusKey = strtolower(str_replace(' ', '_', $asset->status));
-                                $statusClass = 'bg-gray-100 text-gray-600'; 
-                                if (str_contains($statusKey, 'in_use')) $statusClass = 'bg-green-50 text-green-600 border border-green-100';
-                                elseif (str_contains($statusKey, 'maintenance')) $statusClass = 'bg-yellow-50 text-yellow-600 border border-yellow-100';
-                                elseif (str_contains($statusKey, 'not_used')) $statusClass = 'bg-blue-50 text-blue-600 border border-blue-100';
-                                elseif (str_contains($statusKey, 'broken')) $statusClass = 'bg-red-50 text-red-600 border border-red-100';
+                                $colorClass = 'bg-gray-100 text-gray-700'; 
+                                if (str_contains($statusKey, 'in_use')) { $colorClass = 'bg-green-100 text-green-700 border border-green-200'; } 
+                                elseif (str_contains($statusKey, 'available')) { $colorClass = 'bg-blue-100 text-blue-700 border border-blue-200'; } 
+                                elseif (str_contains($statusKey, 'maintenance')) { $colorClass = 'bg-yellow-100 text-yellow-700 border border-yellow-200'; } 
+                                elseif (str_contains($statusKey, 'broken')) { $colorClass = 'bg-red-100 text-red-700 border border-red-200'; }
                             @endphp
-                            <span class="px-3 py-1 inline-flex text-[10px] leading-5 font-bold rounded-full uppercase {{ $statusClass }}">{{ str_replace('_', ' ', $asset->status) }}</span>
+                            <span class="inline-block px-3 py-1 text-[10px] font-extrabold uppercase tracking-wider rounded-full {{ $colorClass }}">
+                                {{ str_replace('_', ' ', $asset->status) }}
+                            </span>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-600 truncate max-w-xs">{{ $asset->description ?? '-' }}</td>
-                        <td class="px-6 py-4 text-center whitespace-nowrap">
+                        
+                        <td class="px-4 py-4 text-sm text-gray-600 truncate max-w-37.5" title="{{ $asset->description }}">
+                            {{ $asset->description ?? '-' }}
+                        </td>
+                        
+                        <td class="px-4 py-4 text-center whitespace-nowrap">
                             <input type="checkbox" value="{{ $asset->id }}" class="asset-checkbox w-5 h-5 rounded border-gray-300 text-purple-600 shadow-sm focus:border-purple-300 focus:ring focus:ring-purple-200 focus:ring-opacity-50 cursor-pointer transition-transform hover:scale-110">
                         </td>
                     </tr>
                     @endforeach
                 @else
                     <tr>
-                        <td colspan="7" class="px-6 py-8 text-center text-gray-400">
-                            Data not found.
+                        <td colspan="7" class="px-4 py-8 text-center text-gray-400">
+                            Data aset tidak ditemukan.
                         </td>
                     </tr>
                 @endif
@@ -61,5 +91,5 @@
 @if ($assets->hasPages())
     <div class="mt-2 px-1">
         {{ $assets->links('pagination.custom') }} 
-        </div>
+    </div>
 @endif

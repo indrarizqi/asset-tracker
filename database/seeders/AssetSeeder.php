@@ -27,7 +27,7 @@ class AssetSeeder extends Seeder
             'purchase_date' => '2026-02-06',
             'category' => 'Mobile',
             'status' => 'broken',
-            'condition' => 'Rusak Berat',
+            'condition' => 'Rusak Total',
             'description' => 'layar patah',
         ]);
 
@@ -48,8 +48,8 @@ class AssetSeeder extends Seeder
             'person_in_charge' => 'Bang Alam',
             'purchase_date' => '2026-02-07',
             'category' => 'Mobile',
-            'status' => 'not_used',
-            'condition' => 'Rusak Ringan',
+            'status' => 'available',
+            'condition' => 'Rusak',
             'description' => 'casan hilang'
         ]);
 

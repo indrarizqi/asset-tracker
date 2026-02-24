@@ -19,9 +19,9 @@ class ScannerController extends Controller
 
         $user = User::where('email', $request->email)->firstOrFail();
 
-        // --- VALIDASI ROLE BARU (HANYA ADMIN) ---
-        if ($user->role !== 'admin') {
-            return response()->json(['message' => 'Maaf, Selain Admin Tidak Boleh Masuk!'], 403);
+        // --- VALIDASI ROLE (HANYA ADMIN & SUPER ADMIN) ---
+        if (!in_array($user->role, ['admin', 'super_admin'])) {
+            return response()->json(['message' => 'Maaf, Hanya Admin dan Super Admin yang Boleh Masuk!'], 403);
         }
         // ----------------------------------------
 

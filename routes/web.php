@@ -15,23 +15,27 @@ Route::get('/dashboard', [AssetController::class, 'index'])->middleware(['auth',
 // --- GRUP ROUTE YANG WAJIB LOGIN ---
 Route::middleware('auth')->group(function () {
 
-    // Fitur Asset Tracking (Semua Role)
-    Route::get('/assets/create', [AssetController::class, 'create'])->name('assets.create');
-    Route::post('/assets/store', [AssetController::class, 'store'])->name('assets.store');
-    Route::get('/assets/print', [AssetController::class, 'printPreview'])->name('assets.print');
-    Route::get('/assets/download-pdf', [AssetController::class, 'downloadPdf'])->name('assets.pdf');
-    Route::get('/assets/{id}/edit', [AssetController::class, 'edit'])->name('assets.edit');
-    Route::put('/assets/{id}', [AssetController::class, 'update'])->name('assets.update');
-    
-    // API: Get all asset IDs (untuk select all across pages)
-    Route::get('/api/assets/all-ids', [AssetController::class, 'getAllAssetIds'])->name('assets.all-ids');
-
-    // Khusus Super Admin
-    Route::middleware(['role:super_admin'])->group(function () {
-        Route::delete('/assets/{id}', [AssetController::class, 'destroy'])->name('assets.destroy');
-        Route::resource('users', UserController::class);
-        Route::get('/report/assets', [AssetController::class, 'exportReport'])->name('report.assets');
+    // === 1. FITUR OPERASIONAL ASET (Bisa diakses semua role) ===
+    Route::middleware(['role:super_admin,admin'])->group(function () {
+        Route::get('/assets/create', [AssetController::class, 'create'])->name('assets.create');
+        Route::post('/assets/store', [AssetController::class, 'store'])->name('assets.store');
+        Route::get('/assets/print', [AssetController::class, 'printPreview'])->name('assets.print');
+        Route::get('/assets/download-pdf', [AssetController::class, 'downloadPdf'])->name('assets.pdf');
+        Route::get('/assets/{id}/edit', [AssetController::class, 'edit'])->name('assets.edit');
+        Route::put('/assets/{id}', [AssetController::class, 'update'])->name('assets.update');
+        Route::get('/assets/export', [App\Http\Controllers\AssetController::class, 'export'])->name('assets.export');
+        Route::delete('/assets/{id}', [AssetController::class, 'destroy'])->name('assets.destroy'); 
+        Route::get('/report/assets', [AssetController::class, 'exportReport'])->name('report.assets'); 
+        
+        // API untuk Select All
+        Route::get('/api/assets/all-ids', [AssetController::class, 'getAllAssetIds'])->name('assets.all-ids');
     });
+
+    // === 2. FITUR SISTEM CORE (KHUSUS Super Admin) ===
+    Route::middleware(['role:super_admin'])->group(function () {
+        Route::resource('users', UserController::class);
+    });
+
 });
 
 // Mobile Scanner

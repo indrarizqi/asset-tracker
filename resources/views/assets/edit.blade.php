@@ -49,7 +49,7 @@
                                 <select name="status" id="status" required
                                     class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 cursor-pointer shadow-sm">
                                     <option value="in_use" {{ (old('status', $asset->status) == 'in_use') ? 'selected' : '' }}>In Use</option>
-                                    <option value="not_used" {{ (old('status', $asset->status) == 'not_used') ? 'selected' : '' }}>Not Used</option>
+                                    <option value="available" {{ (old('status', $asset->status) == 'available') ? 'selected' : '' }}>Available</option>
                                     <option value="maintenance" {{ (old('status', $asset->status) == 'maintenance') ? 'selected' : '' }}>Maintenance</option>
                                     <option value="broken" {{ (old('status', $asset->status) == 'broken') ? 'selected' : '' }}>Broken</option>
                                 </select>
@@ -57,22 +57,24 @@
                             </div>
                         </div>
 
-                        <div class="mb-5">
-                            <label for="condition" class="block text-sm font-semibold text-gray-700 mb-1">Kondisi Fisik*</label>
-                            <select name="condition" id="condition" required
-                                class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 cursor-pointer shadow-sm">
-                                <option value="Baik" {{ (old('condition', $asset->condition) == 'Baik') ? 'selected' : '' }}>Baik</option>
-                                <option value="Rusak" {{ (old('condition', $asset->condition) == 'Rusak') ? 'selected' : '' }}>Rusak</option>
-                                <option value="Rusak Total" {{ (old('condition', $asset->condition) == 'Rusak Total') ? 'selected' : '' }}>Rusak Total</option>
-                            </select>
-                            @error('condition') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
-                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                            <div>
+                                <label for="condition" class="block text-sm font-semibold text-gray-700 mb-1">Kondisi Fisik*</label>
+                                <select name="condition" id="condition" required
+                                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 cursor-pointer shadow-sm">
+                                    <option value="Baik" {{ (old('condition', $asset->condition) == 'Baik') ? 'selected' : '' }}>Baik</option>
+                                    <option value="Rusak" {{ (old('condition', $asset->condition) == 'Rusak') ? 'selected' : '' }}>Rusak</option>
+                                    <option value="Rusak Total" {{ (old('condition', $asset->condition) == 'Rusak Total') ? 'selected' : '' }}>Rusak Total</option>
+                                </select>
+                                @error('condition') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            </div>
 
-                        <div class="mb-5">
-                            <label for="purchase_date" class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Pembelian*</label>
-                            <input type="date" name="purchase_date" id="purchase_date" value="{{ old('purchase_date', $asset->purchase_date) }}" required
-                                class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm">
-                            @error('purchase_date') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            <div>
+                                <label for="purchase_date" class="block text-sm font-semibold text-gray-700 mb-1">Tanggal Pembelian*</label>
+                                <input type="date" name="purchase_date" id="purchase_date" value="{{ old('purchase_date', $asset->purchase_date) }}" required
+                                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm">
+                                @error('purchase_date') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            </div>
                         </div>
 
                         <div class="mb-8">

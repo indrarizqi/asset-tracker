@@ -103,7 +103,7 @@
                     {{ $asset->person_in_charge ?? '-' }}
                     <br><small style="color: #666;">Beli: {{ $asset->purchase_date }}</small>
                 </td>
-                <td class="{{ $asset->condition == 'Baik' ? 'status-used' : ($asset->condition == 'Rusak Ringan' ? 'status-maintenance' : 'status-broken') }}">{{ $asset->condition ?? '-' }}</td>
+                <td class="{{ $asset->condition == 'Baik' ? 'status-used' : ($asset->condition == 'Rusak' ? 'status-maintenance' : 'status-broken') }}">{{ $asset->condition ?? '-' }}</td>
                 <td class="
                                     {{ $asset->status == 'maintenance' ? 'status-maintenance' :
                 ($asset->status == 'in_use' ? 'status-used' : 'status-broken') }}">

@@ -8,10 +8,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckRole
 {
-    public function handle(Request $request, Closure $next, $role)
+    // Gunakan ...$roles (splat operator) agar bisa menerima banyak role yang dipisah koma
+    public function handle(Request $request, Closure $next, ...$roles)
     {
-        // Cek apakah user sudah login & rolenya sesuai
-        if ($request->user()->role !== $role) {
+        // Cek apakah role user sesuai (Super Admin / Admin)
+        if (!in_array($request->user()->role, $roles)) {
             abort(403, 'ANDA TIDAK MEMILIKI AKSES KE HALAMAN INI.');
         }
 

@@ -64,7 +64,7 @@
                                 $statusKey = strtolower(str_replace(' ', '_', $asset->status));
                                 $colorClass = 'bg-gray-100 text-gray-700'; 
                                 if (str_contains($statusKey, 'in_use')) { $colorClass = 'bg-green-100 text-green-700 border border-green-200'; } 
-                                elseif (str_contains($statusKey, 'not_used')) { $colorClass = 'bg-blue-100 text-blue-700 border border-blue-200'; } 
+                                elseif (str_contains($statusKey, 'available')) { $colorClass = 'bg-blue-100 text-blue-700 border border-blue-200'; } 
                                 elseif (str_contains($statusKey, 'maintenance')) { $colorClass = 'bg-yellow-100 text-yellow-700 border border-yellow-200'; } 
                                 elseif (str_contains($statusKey, 'broken')) { $colorClass = 'bg-red-100 text-red-700 border border-red-200'; }
                             @endphp
@@ -79,6 +79,7 @@
                         
                         <td class="px-4 py-4 text-center whitespace-nowrap">
                             <div class="flex items-center justify-center gap-2">
+
                                 <button type="button"
                                     @click="showAssetModal = true; asset = {
                                         id: '{{ $asset->asset_id }}',
@@ -112,7 +113,7 @@
                 @else
                     <tr>
                         <td colspan="8" class="px-4 py-8 text-center text-gray-400">
-                            Data not found.
+                            Data aset tidak ditemukan.
                         </td>
                     </tr>
                 @endif
