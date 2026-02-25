@@ -4,7 +4,7 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
         </h2>
-        <p class="text-sm text-gray-500 mt-1">Overview statistik detail inventaris Vodeco.</p>
+        <p class="text-sm text-gray-500 mt-1">Overview Statistik Aset Vodeco</p>
     </x-slot>
 
     <div class="py-8">
@@ -44,7 +44,7 @@
                 </div>
             </div>
 
-            <h3 class="text-lg font-bold text-gray-800 mt-4">Sebaran Status Aset</h3>
+            <h3 class="text-lg font-bold text-gray-800 mt-4">Status Aset</h3>
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 
                 <div class="bg-white border-l-4 border-blue-500 rounded-lg p-4 shadow-sm">

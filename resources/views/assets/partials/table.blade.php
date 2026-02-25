@@ -97,15 +97,17 @@
 
                                 <button type="button"
                                     @click="showAssetModal = true; asset = {
-                                        id: '{{ $asset->asset_id }}',
+                                        id: '{{ $asset->asset_tag }}',
                                         name: '{{ addslashes($asset->name) }}',
                                         pic: '{{ addslashes($asset->person_in_charge) }}',
                                         category: '{{ $asset->category }}',
                                         status: '{{ $asset->status }}',
+                                        condition: '{{ $asset->condition ?? 'Baik' }}',
+                                        purchase_date: '{{ $asset->purchase_date ? \Carbon\Carbon::parse($asset->purchase_date)->format('d M Y') : '-' }}',
                                         description: '{{ addslashes(trim(preg_replace('/\s+/', ' ', $asset->description))) }}',
                                         edit_url: '{{ route('assets.edit', $asset->id) }}'
                                     }"
-                                    class="p-2 text-blue-500 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-lg transition-all duration-200 shadow-sm border border-blue-100 cursor-pointer" 
+                                    class="p-2 text-blue-500 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-lg transition-all duration-200 shadow-sm border border-blue-100" 
                                     title="View Details">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />

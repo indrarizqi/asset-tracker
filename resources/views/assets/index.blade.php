@@ -4,7 +4,6 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Asset Management') }}
         </h2>
-        <p class="text-sm text-gray-500 mt-1">Kelola data inventaris, update status, dan riwayat peminjaman.</p>
     </x-slot>
 
     <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -13,7 +12,7 @@
         showAssetModal: false, 
         showScannerModal: false, 
         showActionModal: false,
-        asset: { id: '', name: '', pic: '', category: '', status: '', description: '', edit_url: '' },
+        asset: { id: '', name: '', pic: '', category: '', status: '', condition: '', purchase_date: '', description: '', edit_url: '' },
         actionData: { id: '', tag: '', name: '', status: '' }
     }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -79,14 +78,34 @@
                             </div>
                         </div>
                         <div class="bg-white border border-gray-200 rounded-lg p-0 divide-y divide-gray-100">
+                            <div class="flex flex-col sm:flex-row sm:justify-between px-4 py-3">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 sm:mb-0">Person in Charge</span>
+                                <span class="text-sm font-bold text-gray-900 flex items-center gap-1.5">
+                                    <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                    <span x-text="asset.pic || '-'"></span>
+                                </span>
+                            </div>
+                            
+                            <div class="flex justify-between px-4 py-3 bg-gray-50/30">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tgl. Pembelian</span>
+                                <span class="text-sm font-semibold text-gray-700" x-text="asset.purchase_date"></span>
+                            </div>
+
                             <div class="flex justify-between px-4 py-3">
                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Kategori</span>
                                 <span class="px-2 py-1 text-[10px] font-bold rounded-full bg-purple-100 text-purple-700 uppercase" x-text="asset.category"></span>
                             </div>
+
+                            <div class="flex justify-between px-4 py-3 bg-gray-50/30">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Kondisi Fisik</span>
+                                <span class="text-sm font-bold text-gray-800 uppercase" x-text="asset.condition"></span>
+                            </div>
+
                             <div class="flex justify-between px-4 py-3">
                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status</span>
                                 <span class="px-2 py-1 text-[10px] font-bold rounded-full bg-blue-100 text-blue-700 uppercase" x-text="asset.status"></span>
                             </div>
+
                             <div class="flex flex-col px-4 py-3 bg-gray-50/50 rounded-b-lg">
                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Deskripsi</span>
                                 <p class="text-sm text-gray-600 leading-relaxed" x-text="asset.description || '-'"></p>
@@ -95,10 +114,10 @@
                     </div>
                     <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3 border-t border-gray-100">
                         <a :href="asset.edit_url" class="inline-flex justify-center rounded-lg px-5 py-2.5 bg-indigo-600 text-sm font-bold text-white hover:bg-indigo-700 shadow-sm transition-colors">
-                            Edit Data Aset
+                            Edit
                         </a>
                         <button @click="showAssetModal = false" type="button" class="inline-flex justify-center rounded-lg border border-gray-300 px-5 py-2.5 bg-white text-sm font-bold text-gray-700 hover:bg-gray-50 transition-colors">
-                            Tutup
+                            Close
                         </button>
                     </div>
                 </div>

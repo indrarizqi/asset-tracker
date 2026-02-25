@@ -56,7 +56,7 @@ class AssetController extends Controller
         return view('assets.create');
     }
 
-    // Simpan Data, Generate Log Aktivitas, Generate Auto ID
+    // Simpan Data & Log (CREATE) - Tanpa Approval
     public function store(Request $request)
     {
         $request->validate([
@@ -80,7 +80,7 @@ class AssetController extends Controller
         $sequence = $lastAsset ? intval(substr($lastAsset->asset_tag, -3)) + 1 : 1;
         $newTag = sprintf("%s-%s-%03d", $prefix, $year, $sequence);
         
-        // Buat Aset
+        // Langsung buat Aset di tabel utama
         $asset = Asset::create([
             'name' => $request->name,
             'category' => $request->category,
@@ -92,25 +92,20 @@ class AssetController extends Controller
             'description' => $request->description,
         ]);
 
-        $user = Auth::user();
-        $isSuperAdmin = $user->role === 'super_admin';
+        $user = \Illuminate\Support\Facades\Auth::user();
 
-        // Catat ke Log (Jika Super Admin otomatis Approved, jika Admin masuk Pending)
+        // Catat ke Log dengan status langsung APPROVED tanpa mempedulikan Role
         AssetLog::create([
             'asset_id' => $asset->id,
             'user_id' => $user->id,
             'action' => 'create',
             'new_data' => $asset->toArray(),
-            'status' => $isSuperAdmin ? 'approved' : 'pending',
-            'approved_by' => $isSuperAdmin ? $user->id : null,
-            'approved_at' => $isSuperAdmin ? now() : null,
+            'status' => 'approved',
+            'approved_by' => $user->id, // Dianggap disetujui oleh si pembuat itu sendiri
+            'approved_at' => now(),
         ]);
 
-        $pesan = $isSuperAdmin 
-            ? 'Aset Berhasil Ditambah: ' . $newTag 
-            : 'Aset Ditambah: ' . $newTag . ' (Menunggu Konfirmasi Super Admin)';
-
-        return redirect()->route('dashboard')->with('success', $pesan);
+        return redirect()->route('assets.index')->with('success', 'Aset Baru Berhasil Ditambah: ' . $newTag);
     }
 
     public function edit($id)
