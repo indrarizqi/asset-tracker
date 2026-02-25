@@ -88,12 +88,12 @@
                         <div class="flex items-center gap-3 pt-2 border-t border-gray-100 mt-6">
                             <button type="submit" 
                                 class="inline-flex items-center px-6 py-2.5 bg-indigo-600 border border-transparent rounded-lg font-bold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 focus:bg-indigo-700 active:bg-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-md cursor-pointer">
-                                Update Aset
+                                Save
                             </button>
 
                             <a href="{{ route('dashboard') }}" 
                                 class="inline-flex items-center px-6 py-2.5 bg-gray-500 border border-transparent rounded-lg font-bold text-xs text-white uppercase tracking-widest hover:bg-gray-600 focus:bg-gray-600 active:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-sm cursor-pointer">
-                                Batal
+                                Cancel
                             </a>
                         </div>
 

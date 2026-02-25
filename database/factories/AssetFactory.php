@@ -33,7 +33,7 @@ class AssetFactory extends Factory
         $assetTag = sprintf("%s-%s-%03d", $prefix, $year, $sequence);
 
         $statuses = ['in_use', 'maintenance', 'broken', 'available'];
-        $conditions = ['Baik', 'Rusak Ringan', 'Rusak Total'];
+        $conditions = ['Baik', 'Rusak', 'Rusak Total'];
 
         return [
             'asset_tag' => $assetTag,

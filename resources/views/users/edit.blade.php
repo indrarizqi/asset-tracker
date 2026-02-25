@@ -36,9 +36,9 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded font-bold cursor-pointer">Update User</button>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded font-bold cursor-pointer">Save</button>
                     <button class="bg-gray-500 text-white px-4 py-2 rounded font-bold cursor-pointer">
-                        <a href="{{ route('users.index') }}">Back</a>
+                        <a href="{{ route('users.index') }}">Cancel</a>
                     </button>
                 </form>
             </div>

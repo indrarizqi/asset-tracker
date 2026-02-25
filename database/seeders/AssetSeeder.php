@@ -38,7 +38,7 @@ class AssetSeeder extends Seeder
             'purchase_date' => '2026-02-07',
             'category' => 'Mobile',
             'status' => 'maintenance',
-            'condition' => 'Rusak Ringan',
+            'condition' => 'Rusak',
             'description' => 'casan hilang'
         ]);
 

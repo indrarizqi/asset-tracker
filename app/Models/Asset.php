@@ -11,4 +11,9 @@ class Asset extends Model
 
     protected $table = 'assets'; // nama tabel
     protected $guarded = ['id']; // field yang tidak boleh diisi
+
+    public function logs()
+    {
+        return $this->hasMany(AssetLog::class)->latest();
+    }
 }

@@ -4,183 +4,209 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
         </h2>
+        <p class="text-sm text-gray-500 mt-1">Overview statistik detail inventaris Vodeco.</p>
     </x-slot>
 
-    <div class="py-12" x-data="{ 
-        showAssetModal: false, 
-        asset: { 
-            id: '', 
-            name: '', 
-            pic: '', 
-            category: '', 
-            status: '', 
-            description: '', 
-            edit_url: '' 
-        } 
-    }">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
 
-            <div class="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-center gap-4 border border-gray-100">
-                <div class="w-full sm:w-1/2 relative">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-500">Total Aset</p>
+                            <h3 class="text-3xl font-extrabold text-gray-900 mt-1">{{ $totalAssets }}</h3>
+                        </div>
+                        <div class="p-3 bg-blue-50 rounded-lg"><svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg></div>
                     </div>
-                    <input type="text" id="search-input" value="{{ request('search') }}" 
-                        class="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-lg leading-5 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-purple-500 focus:border-purple-500 sm:text-sm transition" 
-                        placeholder="Cari aset berdasarkan ID, nama, atau kategori...">
                 </div>
-                <div class="flex gap-3 w-full sm:w-auto justify-end">
-                    <a href="{{ route('assets.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600  rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-md">
-                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Add New
-                    </a>
-                    @if(auth()->user() && in_array(auth()->user()->role, ['super_admin', 'admin']))
-                    <a href="{{ route('report.assets') }}" target="_blank" class="inline-flex items-center px-4 py-2 bg-purple-600  rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-purple-700 active:bg-purple-900 focus:outline-none focus:border-purple-900 focus:ring ring-purple-300 disabled:opacity-25 transition ease-in-out duration-150 shadow-md">
-                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        PDF Report
-                    </a>
-                    @endif
-                </div>
-            </div>
 
-            <div id="table-container" class="w-full flex flex-col gap-4">
-                @include('assets.partials.table') </div>
-        </div>
-
-        <div x-show="showAssetModal" 
-            style="display: none;"
-            class="fixed inset-0 z-50 overflow-y-auto" 
-            aria-labelledby="modal-title" role="dialog" aria-modal="true">
-            
-            <div x-show="showAssetModal"
-                 x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
-                 x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-                 class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity backdrop-blur-sm" 
-                 @click="showAssetModal = false"></div>
-
-            <div class="flex items-center justify-center min-h-screen p-4 text-center sm:p-0">
-                <div x-show="showAssetModal"
-                     x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                     x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                     class="relative bg-white rounded-xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:max-w-lg w-full border border-gray-100">
-                    
-                    <div class="bg-gray-50 px-5 py-4 border-b border-gray-100 flex justify-between items-center">
-                        <h3 class="text-lg leading-6 font-extrabold text-gray-900 flex items-center gap-2" id="modal-title">
-                            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                            Asset Details
-                        </h3>
-                        <button @click="showAssetModal = false" class="text-gray-400 hover:text-gray-600 focus:outline-none transition-colors cursor-pointer">
-                            <span class="sr-only">Close</span>
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                        </button>
+                <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-500">Total Nilai Aset</p>
+                            <h3 class="text-3xl font-extrabold text-gray-900 mt-1">Rp 0</h3>
+                        </div>
+                        <div class="p-3 bg-purple-50 rounded-lg"><svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></div>
                     </div>
+                </div>
 
-                    <div class="px-6 py-6">
-                        <div class="grid grid-cols-1 gap-y-4">
-                            
-                            <div class="flex items-center gap-4 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
-                                <div class="shrink-0 h-14 w-14 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold text-xl shadow-md">
-                                    <span x-text="asset.id.substring(0,2).toUpperCase()"></span>
-                                </div>
-                                <div>
-                                    <p class="text-xs font-bold text-indigo-400 uppercase tracking-wider" x-text="asset.id"></p>
-                                    <p class="text-lg font-bold text-gray-900 leading-tight" x-text="asset.name"></p>
-                                </div>
-                            </div>
-
-                            <div class="bg-white border border-gray-200 rounded-lg p-0 divide-y divide-gray-100">
-                                <div class="flex flex-col sm:flex-row sm:justify-between px-4 py-3">
-                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 sm:mb-0">Person in Charge</span>
-                                    <span class="text-sm font-bold text-gray-900 flex items-center gap-1.5">
-                                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                                        <span x-text="asset.pic"></span>
-                                    </span>
-                                </div>
-                                <div class="flex justify-between px-4 py-3">
-                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Category</span>
-                                    <span class="px-2 py-1 text-[10px] font-bold rounded-full bg-purple-100 text-purple-700 uppercase" x-text="asset.category"></span>
-                                </div>
-                                <div class="flex justify-between px-4 py-3">
-                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status</span>
-                                    <span class="px-2 py-1 text-[10px] font-bold rounded-full bg-blue-100 text-blue-700 uppercase" x-text="asset.status"></span>
-                                </div>
-                                <div class="flex flex-col px-4 py-3 bg-gray-50/50 rounded-b-lg">
-                                    <span class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Description</span>
-                                    <p class="text-sm text-gray-600 leading-relaxed" x-text="asset.description || '-'"></p>
-                                </div>
-                            </div>
+                <div class="bg-white rounded-xl border {{ $pendingCount > 0 ? 'border-red-300 bg-red-50/30' : 'border-gray-200' }} p-5 shadow-sm transition-colors">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-semibold {{ $pendingCount > 0 ? 'text-red-600' : 'text-gray-500' }}">Pending Tickets (Approval)</p>
+                            <h3 class="text-3xl font-extrabold {{ $pendingCount > 0 ? 'text-red-600' : 'text-gray-900' }} mt-1">{{ $pendingCount }}</h3>
+                        </div>
+                        <div class="p-3 {{ $pendingCount > 0 ? 'bg-red-100' : 'bg-gray-100' }} rounded-lg">
+                            <svg class="w-6 h-6 {{ $pendingCount > 0 ? 'text-red-600' : 'text-gray-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse gap-3 border-t border-gray-100">
-                        <a :href="asset.edit_url" 
-                           class="inline-flex justify-center rounded-lg border border-transparent shadow-sm px-5 py-2.5 bg-indigo-600 text-sm font-bold text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                           <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
-                           Edit
-                        </a>
-                        <button @click="showAssetModal = false" type="button" 
-                                class="inline-flex justify-center rounded-lg border border-gray-300 shadow-sm px-5 py-2.5 bg-white text-sm font-bold text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors cursor-pointer">
-                            Cancel
-                        </button>
+            <h3 class="text-lg font-bold text-gray-800 mt-4">Sebaran Status Aset</h3>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                
+                <div class="bg-white border-l-4 border-blue-500 rounded-lg p-4 shadow-sm">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Available</p>
+                    <h4 class="text-2xl font-extrabold text-gray-800">{{ $statusAvailable }}</h4>
+                </div>
+                
+                <div class="bg-white border-l-4 border-emerald-500 rounded-lg p-4 shadow-sm">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">In Use</p>
+                    <h4 class="text-2xl font-extrabold text-gray-800">{{ $statusInUse }}</h4>
+                </div>
+                
+                <div class="bg-white border-l-4 border-amber-500 rounded-lg p-4 shadow-sm">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Maintenance</p>
+                    <h4 class="text-2xl font-extrabold text-gray-800">{{ $statusMaintenance }}</h4>
+                </div>
+                
+                <div class="bg-white border-l-4 border-red-500 rounded-lg p-4 shadow-sm">
+                    <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Broken</p>
+                    <h4 class="text-2xl font-extrabold text-gray-800">{{ $statusBroken }}</h4>
+                </div>
+
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                    <h4 class="text-sm font-bold text-gray-800 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path></svg>
+                        Kategori Aset
+                    </h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
+                            <span class="text-xs font-bold text-gray-600 uppercase">Mobile</span>
+                            <span class="text-sm font-extrabold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded">{{ $catMobile }}</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
+                            <span class="text-xs font-bold text-gray-600 uppercase">Semi-Mobile</span>
+                            <span class="text-sm font-extrabold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded">{{ $catSemiMobile }}</span>
+                        </div>
+                        <div class="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
+                            <span class="text-xs font-bold text-gray-600 uppercase">Fixed</span>
+                            <span class="text-sm font-extrabold text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded">{{ $catFixed }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
+                    <h4 class="text-sm font-bold text-gray-800 mb-4 pb-2 border-b border-gray-100 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                        Kondisi Fisik
+                    </h4>
+                    <div class="space-y-3">
+                        
+                        <div class="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
+                            <span class="text-xs font-bold text-gray-600 uppercase">Baik</span>
+                            <span class="text-sm font-extrabold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">{{ $condBaik }}</span>
+                        </div>
+
+                        <div class="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
+                            <span class="text-xs font-bold text-gray-600 uppercase">Rusak</span>
+                            <span class="text-sm font-extrabold text-orange-700 bg-orange-100 px-2 py-0.5 rounded">{{ $condRusak }}</span>
+                        </div>
+
+                        <div class="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-lg border border-gray-100">
+                            <span class="text-xs font-bold text-gray-600 uppercase">Rusak Total</span>
+                            <span class="text-sm font-extrabold text-red-700 bg-red-100 px-2 py-0.5 rounded">{{ $condRusakTotal }}</span>
+                        </div>
+
                     </div>
                 </div>
             </div>
-        </div>
 
-    </div> <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            
-            const searchInput = document.getElementById('search-input');
-            const tableContainer = document.getElementById('table-container');
-            let typingTimer;                
-            const doneTypingInterval = 500; // Debounce 500ms
-
-            // 1. EVENT LISTENER INPUT
-            searchInput.addEventListener('input', function() {
-                clearTimeout(typingTimer);
-                typingTimer = setTimeout(performSearch, doneTypingInterval);
-            });
-
-            // 2. FUNGSI AJAX SEARCH
-            function performSearch() {
-                let query = searchInput.value;
-                let url = new URL(window.location.href);
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                if(query) {
-                    url.searchParams.set('search', query);
-                } else {
-                    url.searchParams.delete('search');
-                }
-                url.searchParams.delete('page'); // Reset ke halaman 1
-                window.history.pushState({}, '', url);
+                <div class="lg:col-span-2 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
+                    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                        <h3 class="text-lg font-bold text-gray-800">Activity History</h3>
+                    </div>
+                    <div class="p-6 flex-1">
+                        @if($logs->count() > 0)
+                            <div class="space-y-4">
+                                @foreach($logs as $log)
+                                <div class="border border-gray-200 rounded-lg p-4 hover:border-indigo-200 hover:shadow-sm transition-all bg-white">
+                                    <div class="flex justify-between items-start mb-1">
+                                        <h4 class="font-bold text-gray-900 text-sm">Aset {{ $log->asset->name ?? 'Unknown' }} {{ $log->action }}</h4>
+                                        <span class="text-[10px] text-gray-400 font-mono">{{ $log->created_at->format('d/m/Y, h:i A') }}</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 leading-relaxed mb-2">
+                                        Perubahan diajukan oleh <b>{{ $log->user->name ?? 'Sistem' }}</b>. Status log saat ini: 
+                                        <span class="font-bold {{ $log->status === 'approved' ? 'text-emerald-600' : ($log->status === 'pending' ? 'text-amber-500' : 'text-red-500') }} uppercase">{{ $log->status }}</span>
+                                    </p>
+                                    <div class="text-[11px] text-gray-400 flex items-center gap-1">
+                                        Action: <span class="uppercase font-bold">{{ $log->action }}</span> • Oleh: {{ $log->user->role ?? '-' }}
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="h-full flex flex-col items-center justify-center text-gray-400 py-10">
+                                <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                                <p class="text-sm">Belum ada riwayat aktivitas.</p>
+                            </div>
+                        @endif
+                    </div>
+                </div>
 
-                fetch(url, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                })
-                .then(response => response.text())
-                .then(html => {
-                    tableContainer.innerHTML = html;
-                })
-                .catch(error => console.error('Error:', error));
-            }
+                <div class="lg:col-span-1 bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col">
+                    <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        <h3 class="text-lg font-bold text-gray-800">Status & Quick Actions</h3>
+                    </div>
+                    <div class="p-4 flex-1">
+                        <p class="text-xs text-gray-500 mb-4 px-2">Jalan pintas untuk aksi operasional.</p>
+                        
+                        <div class="space-y-3">
+                            
+                            <a href="#" class="flex items-center justify-between p-4 rounded-lg border {{ $pendingCount > 0 ? 'border-red-200 bg-red-50/50 hover:bg-red-100' : 'border-gray-200 hover:bg-gray-50' }} transition-colors group">
+                                <div>
+                                    <h4 class="text-sm font-bold {{ $pendingCount > 0 ? 'text-red-700' : 'text-gray-900' }}">Antrean Persetujuan</h4>
+                                    <p class="text-[11px] {{ $pendingCount > 0 ? 'text-red-500' : 'text-gray-500' }} mt-0.5">Review tiket pengajuan Admin</p>
+                                </div>
+                                <div class="flex items-center gap-3">
+                                    @if($pendingCount > 0)
+                                        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white shadow-sm">{{ $pendingCount }}</span>
+                                    @endif
+                                    <svg class="w-4 h-4 {{ $pendingCount > 0 ? 'text-red-500' : 'text-gray-400' }} group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                                </div>
+                            </a>
 
-            // 3. HANDLING PAGINATION VIA AJAX
-            tableContainer.addEventListener('click', function(e) {
-                if (e.target.closest('.pagination a')) {
-                    e.preventDefault();
-                    let pageUrl = e.target.closest('a').href;
-                    window.history.pushState({}, '', pageUrl);
+                            <a href="{{ route('assets.index') }}" class="flex items-center justify-between p-4 rounded-lg border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors group">
+                                <div>
+                                    <h4 class="text-sm font-bold text-gray-900 group-hover:text-indigo-700">Manajemen Aset</h4>
+                                    <p class="text-[11px] text-gray-500 mt-0.5">Lihat tabel seluruh data aset</p>
+                                </div>
+                                <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-600 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </a>
 
-                    fetch(pageUrl, {
-                        headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                    })
-                    .then(response => response.text())
-                    .then(html => {
-                        tableContainer.innerHTML = html;
-                        tableContainer.scrollIntoView({ behavior: 'smooth' });
-                    });
-                }
-            });
-        });
-    </script>
+                            <a href="{{ route('assets.create') }}" class="flex items-center justify-between p-4 rounded-lg border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors group">
+                                <div>
+                                    <h4 class="text-sm font-bold text-gray-900 group-hover:text-indigo-700">Tambah Aset Baru</h4>
+                                    <p class="text-[11px] text-gray-500 mt-0.5">Input data inventaris baru</p>
+                                </div>
+                                <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-600 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                            </a>
+
+                        </div>
+
+                        <div class="mt-6 bg-blue-50 border border-blue-100 rounded-lg p-4">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="text-blue-500">💡</span>
+                                <h5 class="text-xs font-bold text-blue-800">Tip Workflow</h5>
+                            </div>
+                            <p class="text-[11px] text-blue-600 leading-relaxed">
+                                Pantau kotak <b>Antrean Persetujuan</b>. Setiap kotak tersebut berwarna merah, berarti ada Admin yang meminta validasi perubahan data atau penghapusan aset.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
 </x-app-layout>

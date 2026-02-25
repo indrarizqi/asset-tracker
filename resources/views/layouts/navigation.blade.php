@@ -14,11 +14,17 @@
             <span>Dashboard</span>
         </a>
 
+        <a href="{{ route('assets.index') }}" 
+           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 group {{ request()->routeIs('assets.index*') ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
+            <svg class="w-5 h-5 {{ request()->routeIs('assets.index*') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+            <span>Asset Management</span>
+        </a>
+
         @if(Auth::user()->role === 'super_admin') 
         <a href="{{ route('users.index') }}" 
            class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-200 group {{ request()->routeIs('users.*') ? 'bg-indigo-50 text-indigo-700 font-bold' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }}">
             <svg class="w-5 h-5 {{ request()->routeIs('users.*') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-600' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-            <span>Users</span>
+            <span>Users Management</span>
         </a>
         @endif
 

@@ -10,13 +10,14 @@ Route::get('/', function () {
 });
 
 // Dashboard
-Route::get('/dashboard', [AssetController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [AssetController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
 
 // --- GRUP ROUTE YANG WAJIB LOGIN ---
 Route::middleware('auth')->group(function () {
 
     // === 1. FITUR OPERASIONAL ASET (Bisa diakses semua role) ===
     Route::middleware(['role:super_admin,admin'])->group(function () {
+        Route::get('/assets', [AssetController::class, 'index'])->name('assets.index'); // Kelola aset
         Route::get('/assets/create', [AssetController::class, 'create'])->name('assets.create');
         Route::post('/assets/store', [AssetController::class, 'store'])->name('assets.store');
         Route::get('/assets/print', [AssetController::class, 'printPreview'])->name('assets.print');

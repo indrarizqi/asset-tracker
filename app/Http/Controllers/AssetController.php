@@ -3,18 +3,60 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
+use App\Models\AssetLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Barryvdh\DomPDF\Facade\Pdf; // Import facade PDF
 
 class AssetController extends Controller
 {
+    // Dashboard
+    public function dashboard()
+    {
+        // 1. Data Utama
+        $totalAssets = Asset::count();
+        $pendingCount = AssetLog::where('status', 'pending')->count();
+        
+        // 2. Data Status Aset
+        $statusAvailable = Asset::where('status', 'available')->count();
+        $statusInUse = Asset::where('status', 'in_use')->count();
+        $statusMaintenance = Asset::where('status', 'maintenance')->count();
+        $statusBroken = Asset::where('status', 'broken')->count();
+
+        // 3. Data Kategori Aset
+        $catMobile = Asset::where('category', 'mobile')->count();
+        $catSemiMobile = Asset::where('category', 'semi-mobile')->count();
+        $catFixed = Asset::where('category', 'fixed')->count();
+
+        // 4. Data Kondisi Aset (Dihitung Eksplisit agar UI Fixed)
+        $condBaik = Asset::where('condition', 'like', '%baik%')->count();
+        $condRusakTotal = Asset::where(function($q) {
+            $q->where('condition', 'like', '%total%')
+              ->orWhere('condition', 'like', '%berat%');
+        })->count();
+        // Rusak biasa = Total yang mengandung kata 'rusak' tapi BUKAN rusak total/berat
+        $condRusak = Asset::where('condition', 'like', '%rusak%')
+                          ->where('condition', 'not like', '%total%')
+                          ->where('condition', 'not like', '%berat%')->count();
+
+        // 5. Data Activity History
+        $logs = AssetLog::with(['user', 'asset'])->latest()->take(5)->get();
+
+        return view('dashboard', compact(
+            'totalAssets', 'pendingCount', 
+            'statusAvailable', 'statusInUse', 'statusMaintenance', 'statusBroken',
+            'catMobile', 'catSemiMobile', 'catFixed',
+            'condBaik', 'condRusak', 'condRusakTotal', 'logs' 
+        ));
+    }
+    
     public function create()
     {
         return view('assets.create');
     }
 
-    // Simpan Data & Generate Auto ID
+    // Simpan Data, Generate Log Aktivitas, Generate Auto ID
     public function store(Request $request)
     {
         $request->validate([
@@ -38,20 +80,37 @@ class AssetController extends Controller
         $sequence = $lastAsset ? intval(substr($lastAsset->asset_tag, -3)) + 1 : 1;
         $newTag = sprintf("%s-%s-%03d", $prefix, $year, $sequence);
         
-        $status = $request->status;
-
-        Asset::create([
+        // Buat Aset
+        $asset = Asset::create([
             'name' => $request->name,
             'category' => $request->category,
             'asset_tag' => $newTag,
-            'status' => $status,            
+            'status' => $request->status,            
             'purchase_date' => $request->purchase_date,
             'condition' => $request->condition,
             'person_in_charge' => $request->person_in_charge,
             'description' => $request->description,
         ]);
 
-        return redirect()->route('dashboard')->with('success', 'Aset Berhasil Ditambah : ' . $newTag . ' (' . ucfirst($status) . ')');
+        $user = Auth::user();
+        $isSuperAdmin = $user->role === 'super_admin';
+
+        // Catat ke Log (Jika Super Admin otomatis Approved, jika Admin masuk Pending)
+        AssetLog::create([
+            'asset_id' => $asset->id,
+            'user_id' => $user->id,
+            'action' => 'create',
+            'new_data' => $asset->toArray(),
+            'status' => $isSuperAdmin ? 'approved' : 'pending',
+            'approved_by' => $isSuperAdmin ? $user->id : null,
+            'approved_at' => $isSuperAdmin ? now() : null,
+        ]);
+
+        $pesan = $isSuperAdmin 
+            ? 'Aset Berhasil Ditambah: ' . $newTag 
+            : 'Aset Ditambah: ' . $newTag . ' (Menunggu Konfirmasi Super Admin)';
+
+        return redirect()->route('dashboard')->with('success', $pesan);
     }
 
     public function edit($id)
@@ -72,7 +131,9 @@ class AssetController extends Controller
         ]);
 
         $asset = Asset::findOrFail($id);
-        $asset->update([
+        $user = Auth::user();
+
+        $newData = [
             'name' => $request->name,
             'category' => $request->category,
             'status' => $request->status,
@@ -80,20 +141,75 @@ class AssetController extends Controller
             'purchase_date' => $request->purchase_date,
             'condition' => $request->condition,
             'person_in_charge' => $request->person_in_charge,
-        ]);
+        ];
 
-        return redirect()->route('dashboard')->with('success', 'Data Aset Berhasil Diperbarui!');
+        if ($user->role === 'super_admin') {
+            // === SUPER ADMIN: Langsung Ubah Data & Auto Approve ===
+            $oldData = $asset->toArray();
+            $asset->update($newData);
+
+            AssetLog::create([
+                'asset_id' => $asset->id,
+                'user_id' => $user->id,
+                'action' => 'update',
+                'old_data' => $oldData,
+                'new_data' => $asset->toArray(),
+                'status' => 'approved',
+                'approved_by' => $user->id,
+                'approved_at' => now(),
+            ]);
+
+            return redirect()->route('dashboard')->with('success', 'Data Aset Berhasil Diperbarui!');
+        } else {
+            // === ADMIN: Masuk Antrean Log (Data Asli Tidak Berubah Dulu) ===
+            AssetLog::create([
+                'asset_id' => $asset->id,
+                'user_id' => $user->id,
+                'action' => 'update',
+                'old_data' => $asset->toArray(),
+                'new_data' => $newData,
+                'status' => 'pending', // Status Log-nya Pending
+            ]);
+
+            return redirect()->route('dashboard')->with('success', 'Permintaan update aset telah dikirim dan menunggu persetujuan Super Admin.');
+        }
     }
 
-    // Hapus Aset (Untuk Super Admin)
+    // Hapus Aset
     public function destroy($id)
     {
         $asset = Asset::findOrFail($id);
-        $asset->delete();
-        return redirect()->route('dashboard')->with('success', 'Aset Berhasil Dihapus.');
+        $user = Auth::user();
+
+        if ($user->role === 'super_admin') {
+            // Super Admin: Langsung Hapus
+            AssetLog::create([
+                'asset_id' => $asset->id,
+                'user_id' => $user->id,
+                'action' => 'delete',
+                'old_data' => $asset->toArray(),
+                'status' => 'approved',
+                'approved_by' => $user->id,
+                'approved_at' => now(),
+            ]);
+            
+            $asset->delete();
+            return redirect()->route('dashboard')->with('success', 'Aset Berhasil Dihapus.');
+        } else {
+            // Admin: Request Hapus
+            AssetLog::create([
+                'asset_id' => $asset->id,
+                'user_id' => $user->id,
+                'action' => 'delete',
+                'old_data' => $asset->toArray(),
+                'status' => 'pending',
+            ]);
+            
+            return redirect()->route('dashboard')->with('success', 'Permintaan hapus aset dikirim ke Super Admin.');
+        }
     }
 
-    // Export Laporan Aset (Untuk Super Admin)
+    // Export Laporan Aset
     public function exportReport()
     {
         // Ambil semua data aset, urutkan berdasarkan kategori lalu nama
@@ -193,8 +309,8 @@ class AssetController extends Controller
             return view('assets.partials.table', compact('assets'))->render();
         }
 
-        // Jika request biasa, kembalikan halaman dashboard utuh
-        return view('dashboard', compact('assets'));
+        // Jika request biasa, kembalikan halaman index aset
+        return view('assets.index', compact('assets'));
     }
 
     // Method Selection untuk Menu "Print QR Code"
