@@ -1,13 +1,16 @@
 <?php
 
 use App\Http\Controllers\AssetController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Login
 Route::get('/', function () {
     return view('auth.login');
-});
+})->middleware('guest')->name('login');
+
+Route::post('/', [AuthenticatedSessionController::class, 'store'])->middleware('guest')->name('login.post');
 
 // Dashboard
 Route::get('/dashboard', [AssetController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
