@@ -162,7 +162,7 @@
                         
                         <div class="space-y-3">
                             
-                            <a href="#" class="flex items-center justify-between p-4 rounded-lg border {{ $pendingCount > 0 ? 'border-red-200 bg-red-50/50 hover:bg-red-100' : 'border-gray-200 hover:bg-gray-50' }} transition-colors group">
+                            <a href="{{ route('approvals.index') }}" class="flex items-center justify-between p-4 rounded-lg border {{ $pendingCount > 0 ? 'border-red-200 bg-red-50/50 hover:bg-red-100' : 'border-gray-200 hover:bg-gray-50' }} transition-colors group">
                                 <div>
                                     <h4 class="text-sm font-bold {{ $pendingCount > 0 ? 'text-red-700' : 'text-gray-900' }}">Antrean Persetujuan</h4>
                                     <p class="text-[11px] {{ $pendingCount > 0 ? 'text-red-500' : 'text-gray-500' }} mt-0.5">Review tiket pengajuan Admin</p>

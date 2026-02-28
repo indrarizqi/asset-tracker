@@ -18,8 +18,7 @@
                         <div class="mb-5">
                             <label for="name" class="block text-sm font-semibold text-gray-700 mb-1">Nama Aset*</label>
                             <input type="text" name="name" id="name" value="{{ old('name') }}" required
-                                class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm"
-                                placeholder="Contoh: Laptop Dell Latitude 7490">
+                                class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm">
                             @error('name') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
 

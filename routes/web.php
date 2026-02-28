@@ -38,6 +38,9 @@ Route::middleware('auth')->group(function () {
     // === 2. FITUR SISTEM CORE (KHUSUS Super Admin) ===
     Route::middleware(['role:super_admin'])->group(function () {
         Route::resource('users', UserController::class);
+        Route::get('/approvals', [AssetController::class, 'approvalQueue'])->name('approvals.index');
+        Route::post('/approvals/{id}/approve', [AssetController::class, 'approve'])->name('approvals.approve');
+        Route::post('/approvals/{id}/reject', [AssetController::class, 'reject'])->name('approvals.reject');
     });
 
 });

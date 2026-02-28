@@ -353,4 +353,65 @@ class AssetController extends Controller
             'ids' => $assetIds
         ]);
     }
+
+    // FITUR APPROVAL QUEUE (MAKER-CHECKER)
+    // 1. Tampilkan Halaman Antrean
+    public function approvalQueue()
+    {
+        // Pastikan hanya Super Admin yang bisa masuk
+        if (Auth::user()->role !== 'super_admin') {
+            abort(403, 'Akses Ditolak. Hanya Super Admin yang dapat melihat halaman ini.');
+        }
+
+        // Ambil data log yang masih 'pending'
+        $pendingLogs = \App\Models\AssetLog::with(['user', 'asset'])
+                        ->where('status', 'pending')
+                        ->latest()
+                        ->paginate(10);
+
+        return view('assets.approvals', compact('pendingLogs'));
+    }
+
+    // 2. Logika Setujui (Approve)
+    public function approve($id)
+    {
+        if (Auth::user()->role !== 'super_admin') abort(403);
+
+        $log = \App\Models\AssetLog::findOrFail($id);
+        $asset = Asset::findOrFail($log->asset_id);
+
+        // Eksekusi perubahan ke tabel utama (assets) berdasarkan tipe action
+        if ($log->action === 'update') {
+            $asset->update($log->new_data);
+        } elseif ($log->action === 'delete') {
+            $asset->delete();
+        }
+
+        // Ubah status tiket log menjadi approved
+        $log->update([
+            'status' => 'approved',
+            'approved_by' => Auth::user()->id,
+            'approved_at' => now()
+        ]);
+
+        return back()->with('success', 'Tiket permintaan ' . strtoupper($log->action) . ' berhasil disetujui!');
+    }
+
+    // 3. Logika Tolak (Reject)
+    public function reject(Request $request, $id)
+    {
+        if (Auth::user()->role !== 'super_admin') abort(403);
+
+        $log = \App\Models\AssetLog::findOrFail($id);
+        
+        // Ubah status tiket log menjadi rejected (tabel assets tidak disentuh)
+        $log->update([
+            'status' => 'rejected',
+            'approved_by' => Auth::user()->id,
+            'approved_at' => now(),
+            'rejection_note' => $request->rejection_note ?? 'Ditolak oleh Super Admin tanpa catatan.'
+        ]);
+
+        return back()->with('error', 'Tiket permintaan ' . strtoupper($log->action) . ' telah ditolak.');
+    }
 }

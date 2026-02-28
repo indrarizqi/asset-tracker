@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('category')->default('General'); 
             $table->string('status')->default('available');
             $table->string('condition')->default('Baik');
+            $table->bigInteger('price')->default(0)->nullable();
             $table->string('description')->nullable();
             $table->timestamps();
         });
