@@ -4,7 +4,7 @@
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             {{ __('Dashboard') }}
         </h2>
-        <p class="text-sm text-gray-500 mt-1">Overview Statistik Aset Vodeco</p>
+        <p class="text-sm text-gray-500 mt-1">Here's a quick overview of your dashboard.</p>
     </x-slot>
 
     <div class="py-8">
@@ -118,93 +118,40 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <div class="lg:col-span-2 bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col">
-                    <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
-                        <h3 class="text-lg font-bold text-gray-800">Activity History</h3>
-                    </div>
-                    <div class="p-6 flex-1">
-                        @if($logs->count() > 0)
-                            <div class="space-y-4">
-                                @foreach($logs as $log)
-                                <div class="border border-gray-200 rounded-lg p-4 hover:border-indigo-200 hover:shadow-sm transition-all bg-white">
-                                    <div class="flex justify-between items-start mb-1">
-                                        <h4 class="font-bold text-gray-900 text-sm">Aset {{ $log->asset->name ?? 'Unknown' }} {{ $log->action }}</h4>
-                                        <span class="text-[10px] text-gray-400 font-mono">{{ $log->created_at->format('d/m/Y, h:i A') }}</span>
-                                    </div>
-                                    <p class="text-xs text-gray-500 leading-relaxed mb-2">
-                                        Perubahan diajukan oleh <b>{{ $log->user->name ?? 'Sistem' }}</b>. Status log saat ini: 
-                                        <span class="font-bold {{ $log->status === 'approved' ? 'text-emerald-600' : ($log->status === 'pending' ? 'text-amber-500' : 'text-red-500') }} uppercase">{{ $log->status }}</span>
-                                    </p>
-                                    <div class="text-[11px] text-gray-400 flex items-center gap-1">
-                                        Action: <span class="uppercase font-bold">{{ $log->action }}</span> • Oleh: {{ $log->user->role ?? '-' }}
-                                    </div>
-                                </div>
-                                @endforeach
-                            </div>
-                        @else
-                            <div class="h-full flex flex-col items-center justify-center text-gray-400 py-10">
-                                <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
-                                <p class="text-sm">Belum ada riwayat aktivitas.</p>
-                            </div>
-                        @endif
-                    </div>
+            <div class="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden flex flex-col mt-6">
+                <div class="px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                    <h3 class="text-lg font-bold text-gray-800">Activity History</h3>
                 </div>
-
-                <div class="lg:col-span-1 bg-white border border-gray-200 rounded-xl shadow-sm flex flex-col">
-                    <div class="px-6 py-4 border-b border-gray-100 flex items-center gap-2">
-                        <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        <h3 class="text-lg font-bold text-gray-800">Status & Quick Actions</h3>
-                    </div>
-                    <div class="p-4 flex-1">
-                        <p class="text-xs text-gray-500 mb-4 px-2">Jalan pintas untuk aksi operasional.</p>
+                <div class="p-6 flex-1">
+                    @if($logs->count() > 0)
+                        <div class="space-y-4">
+                            @foreach($logs as $log)
+                            <div class="border border-gray-200 rounded-lg p-4 hover:border-indigo-200 hover:shadow-sm transition-all bg-white">
+                                <div class="flex justify-between items-start mb-1">
+                                    <h4 class="font-bold text-gray-900 text-sm">Aset {{ $log->asset->name ?? 'Unknown' }} {{ $log->action }}</h4>
+                                    <span class="text-[10px] text-gray-400 font-mono">{{ $log->created_at->format('d/m/Y, h:i A') }}</span>
+                                </div>
+                                <p class="text-xs text-gray-500 leading-relaxed mb-2">
+                                    Perubahan diajukan oleh <b>{{ $log->user->name ?? 'Sistem' }}</b>. Status log saat ini: 
+                                    <span class="font-bold {{ $log->status === 'approved' ? 'text-emerald-600' : ($log->status === 'pending' ? 'text-amber-500' : 'text-red-500') }} uppercase">{{ $log->status }}</span>
+                                </p>
+                                <div class="text-[11px] text-gray-400 flex items-center gap-1">
+                                    Action: <span class="uppercase font-bold">{{ $log->action }}</span> • Oleh: <span class="uppercase">{{ str_replace('_', ' ', $log->user->role ?? '-') }}</span>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
                         
-                        <div class="space-y-3">
-                            
-                            <a href="{{ route('approvals.index') }}" class="flex items-center justify-between p-4 rounded-lg border {{ $pendingCount > 0 ? 'border-red-200 bg-red-50/50 hover:bg-red-100' : 'border-gray-200 hover:bg-gray-50' }} transition-colors group">
-                                <div>
-                                    <h4 class="text-sm font-bold {{ $pendingCount > 0 ? 'text-red-700' : 'text-gray-900' }}">Antrean Persetujuan</h4>
-                                    <p class="text-[11px] {{ $pendingCount > 0 ? 'text-red-500' : 'text-gray-500' }} mt-0.5">Review tiket pengajuan Admin</p>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    @if($pendingCount > 0)
-                                        <span class="flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white shadow-sm">{{ $pendingCount }}</span>
-                                    @endif
-                                    <svg class="w-4 h-4 {{ $pendingCount > 0 ? 'text-red-500' : 'text-gray-400' }} group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                                </div>
-                            </a>
-
-                            <a href="{{ route('assets.index') }}" class="flex items-center justify-between p-4 rounded-lg border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors group">
-                                <div>
-                                    <h4 class="text-sm font-bold text-gray-900 group-hover:text-indigo-700">Manajemen Aset</h4>
-                                    <p class="text-[11px] text-gray-500 mt-0.5">Lihat tabel seluruh data aset</p>
-                                </div>
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-600 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                            </a>
-
-                            <a href="{{ route('assets.create') }}" class="flex items-center justify-between p-4 rounded-lg border border-gray-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors group">
-                                <div>
-                                    <h4 class="text-sm font-bold text-gray-900 group-hover:text-indigo-700">Tambah Aset Baru</h4>
-                                    <p class="text-[11px] text-gray-500 mt-0.5">Input data inventaris baru</p>
-                                </div>
-                                <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-600 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-                            </a>
-
+                        <div class="mt-6 pt-4 border-t border-gray-100">
+                            {{ $logs->links() }}
                         </div>
-
-                        <div class="mt-6 bg-blue-50 border border-blue-100 rounded-lg p-4">
-                            <div class="flex items-center gap-2 mb-1">
-                                <span class="text-blue-500">💡</span>
-                                <h5 class="text-xs font-bold text-blue-800">Tip Workflow</h5>
-                            </div>
-                            <p class="text-[11px] text-blue-600 leading-relaxed">
-                                Pantau kotak <b>Antrean Persetujuan</b>. Setiap kotak tersebut berwarna merah, berarti ada Admin yang meminta validasi perubahan data atau penghapusan aset.
-                            </p>
+                    @else
+                        <div class="h-full flex flex-col items-center justify-center text-gray-400 py-10">
+                            <svg class="w-12 h-12 mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+                            <p class="text-sm">Belum ada riwayat aktivitas.</p>
                         </div>
-                    </div>
+                    @endif
                 </div>
-
             </div>
 
         </div>
