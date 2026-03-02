@@ -26,13 +26,11 @@ Fitur ini memungkinkan user untuk memilih seluruh aset dari semua halaman sekali
 
 ### Testing
 4. **`tests/Feature/AssetControllerTest.php`** ✨ (Baru)
-   - 8 unit tests mencakup:
+    - 4 feature tests mencakup:
      - Get all IDs tanpa filter
-     - Get all IDs dengan search filter (name, tag, category)
      - Authentication requirement
-     - Empty data handling
-     - Not found handling
-     - JSON format validation
+       - Filter lanjutan pada index assets
+       - Siklus check-out dan check-in transaksi aset
 
 5. **`database/factories/AssetFactory.php`** ✨ (Baru)
    - Factory untuk Asset model
@@ -90,17 +88,13 @@ checkboxes.forEach(cb => cb.checked = true);
 ## 🧪 Test Results
 ```bash
 PASS  Tests\Feature\AssetControllerTest
-✓ get all asset ids returns all ids (0.25s)
-✓ get all asset ids with search filter by name (0.02s)
-✓ get all asset ids with search filter by asset tag (0.02s)
-✓ get all asset ids with search filter by category (0.02s)
-✓ get all asset ids requires authentication (0.01s)
-✓ get all asset ids returns empty when no assets (0.01s)
-✓ get all asset ids returns empty when search not found (0.01s)
-✓ get all asset ids returns correct json format (0.01s)
+✓ get all asset ids returns all ids for authenticated admin (0.41s)
+✓ get all asset ids requires authentication (0.03s)
+✓ assets index supports advanced filters (0.07s)
+✓ check out and check in create and close transaction (0.05s)
 
-Tests:  8 passed (22 assertions)
-Duration: 0.43s
+Tests:  4 passed (17 assertions)
+Duration: 0.64s
 ```
 
 ## 📊 Metrics
@@ -114,8 +108,8 @@ Duration: 0.43s
 - **Total: ~407 lines** (production code + tests)
 
 **Test Coverage:**
-- Unit tests: 8 test cases
-- Test assertions: 22 assertions
+- Feature tests: 4 test cases
+- Test assertions: 17 assertions
 - Coverage: Method `getAllAssetIds()` → 100%
 
 ## 🔒 Security & Performance

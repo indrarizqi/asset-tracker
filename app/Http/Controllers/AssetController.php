@@ -281,8 +281,6 @@ class AssetController extends Controller
     //
     public function downloadPdf(Request $request)
     {
-        $selectedIds = $request->input('selected_assets');
-        
         if ($request->has('selected_assets')) {
             // MODE 1: CETAK SELEKTIF (CHECKLIST)
             $assets = Asset::whereIn('id', $request->selected_assets)
@@ -293,24 +291,18 @@ class AssetController extends Controller
             $assets = Asset::orderBy('id', 'asc')->get();
         }
 
+        // Generate QR Code untuk setiap aset terpilih
+        foreach ($assets as $asset) {
+            $asset->qr_code = base64_encode(QrCode::format('png')->size(100)->generate($asset->asset_tag));
+        }
+
         // Load view PDF
-        $pdf = pdf::loadView('assets.pdf_label', compact('assets'));
+        $pdf = Pdf::loadView('assets.pdf_label', compact('assets'));
         
         // Set ukuran kertas custom (contoh: ukuran label sticker) atau A4
         $pdf->setPaper('a4', 'portrait');
 
         // Stream (Preview dulu di browser, jangan langsung download)
-        return $pdf->stream('Vodeco.pdf');
-
-        // Generate QR Code untuk setiap aset terpilih
-        foreach ($assets as $asset) {
-            // Kita gunakan library simple-qrcode
-            $asset->qr_code = base64_encode(QrCode::format('png')->size(100)->generate($asset->asset_tag));
-        }
-
-        $pdf = Pdf::loadView('assets.pdf_label', compact('assets'));
-        
-        // Tips: Gunakan 'stream' agar bisa preview dulu di browser, bukan langsung 'download'
         return $pdf->stream('labels-vodeco-selected.pdf');
     }
 
