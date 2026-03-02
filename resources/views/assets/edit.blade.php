@@ -12,7 +12,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-xl border border-gray-100">
                 <div class="p-8 bg-white">
                     
-                    <form action="{{ route('assets.update', $asset->id) }}" method="POST">
+                    <form action="{{ route('assets.update', $asset->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
 
@@ -30,6 +30,39 @@
                                 class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm"
                                 placeholder="Kosongkan jika tidak ada">
                             @error('person_in_charge') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                            <div>
+                                <label for="location" class="block text-sm font-semibold text-gray-700 mb-1">Lokasi Aset</label>
+                                <input type="text" name="location" id="location" value="{{ old('location', $asset->location) }}"
+                                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm"
+                                    placeholder="Contoh: Gudang A / Site B">
+                                @error('location') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label for="vendor" class="block text-sm font-semibold text-gray-700 mb-1">Vendor</label>
+                                <input type="text" name="vendor" id="vendor" value="{{ old('vendor', $asset->vendor) }}"
+                                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm"
+                                    placeholder="Contoh: PT Mitra Teknologi">
+                                @error('vendor') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
+                            <div>
+                                <label for="serial_number" class="block text-sm font-semibold text-gray-700 mb-1">Serial Number</label>
+                                <input type="text" name="serial_number" id="serial_number" value="{{ old('serial_number', $asset->serial_number) }}"
+                                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm"
+                                    placeholder="SN-XXXX-XXXX">
+                                @error('serial_number') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            </div>
+                            <div>
+                                <label for="warranty_expiry_date" class="block text-sm font-semibold text-gray-700 mb-1">Garansi Sampai</label>
+                                <input type="date" name="warranty_expiry_date" id="warranty_expiry_date" value="{{ old('warranty_expiry_date', optional($asset->warranty_expiry_date)->format('Y-m-d')) }}"
+                                    class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm">
+                                @error('warranty_expiry_date') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                            </div>
                         </div>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-5">
@@ -84,6 +117,29 @@
                                 placeholder="Tambahkan deskripsi atau keterangan detail mengenai aset ini...">{{ old('description', $asset->description) }}</textarea>
                             @error('description') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
                         </div>
+
+                        <div class="mb-5">
+                            <label for="attachments" class="block text-sm font-semibold text-gray-700 mb-1">Tambah Lampiran / Foto</label>
+                            <input type="file" name="attachments[]" id="attachments" multiple
+                                class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200 shadow-sm">
+                            <p class="text-xs text-gray-500 mt-1">Maks 5MB/file. Format: JPG, PNG, PDF, DOC, DOCX, XLS, XLSX.</p>
+                            @error('attachments.*') <span class="text-red-500 text-xs mt-1">{{ $message }}</span> @enderror
+                        </div>
+
+                        @if($asset->attachments->count() > 0)
+                            <div class="mb-8 bg-gray-50 border border-gray-100 rounded-lg p-4">
+                                <h4 class="text-sm font-bold text-gray-700 mb-2">Lampiran Saat Ini</h4>
+                                <ul class="space-y-2 text-sm">
+                                    @foreach($asset->attachments as $attachment)
+                                        <li>
+                                            <a href="{{ asset('storage/' . $attachment->file_path) }}" target="_blank" class="text-indigo-600 hover:text-indigo-800 font-medium">
+                                                {{ $attachment->file_name }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
 
                         <div class="flex items-center gap-3 pt-2 border-t border-gray-100 mt-6">
                             <button type="submit" 

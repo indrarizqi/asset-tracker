@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
+use App\Models\AssetAttachment;
 use App\Models\AssetLog;
+use App\Models\AssetTransaction;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -67,6 +70,11 @@ class AssetController extends Controller
             'status' => 'required|in:in_use,maintenance,broken,available',
             'purchase_date' => 'required',
             'condition' => 'required',
+            'location' => 'nullable|string|max:255',
+            'vendor' => 'nullable|string|max:255',
+            'serial_number' => 'nullable|string|max:255',
+            'warranty_expiry_date' => 'nullable|date',
+            'attachments.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:5120',
         ]);
 
         $prefix = match($request->category) {
@@ -88,10 +96,16 @@ class AssetController extends Controller
             'asset_tag' => $newTag,
             'status' => $request->status,            
             'purchase_date' => $request->purchase_date,
+            'warranty_expiry_date' => $request->warranty_expiry_date,
             'condition' => $request->condition,
             'person_in_charge' => $request->person_in_charge,
+            'location' => $request->location,
+            'vendor' => $request->vendor,
+            'serial_number' => $request->serial_number,
             'description' => $request->description,
         ]);
+
+        $this->storeAttachments($request, $asset, Auth::id());
 
         $user = \Illuminate\Support\Facades\Auth::user();
 
@@ -111,7 +125,7 @@ class AssetController extends Controller
 
     public function edit($id)
     {
-        $asset = Asset::findOrFail($id);
+        $asset = Asset::with('attachments')->findOrFail($id);
         return view('assets.edit', compact('asset'));
     }
 
@@ -124,6 +138,11 @@ class AssetController extends Controller
             'status' => 'required|in:in_use,maintenance,broken,available',
             'purchase_date' => 'required',
             'condition' => 'required',
+            'location' => 'nullable|string|max:255',
+            'vendor' => 'nullable|string|max:255',
+            'serial_number' => 'nullable|string|max:255',
+            'warranty_expiry_date' => 'nullable|date',
+            'attachments.*' => 'nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx,xls,xlsx|max:5120',
         ]);
 
         $asset = Asset::findOrFail($id);
@@ -135,8 +154,12 @@ class AssetController extends Controller
             'status' => $request->status,
             'description' => $request->description,
             'purchase_date' => $request->purchase_date,
+            'warranty_expiry_date' => $request->warranty_expiry_date,
             'condition' => $request->condition,
             'person_in_charge' => $request->person_in_charge,
+            'location' => $request->location,
+            'vendor' => $request->vendor,
+            'serial_number' => $request->serial_number,
         ];
 
         if ($user->role === 'super_admin') {
@@ -154,6 +177,8 @@ class AssetController extends Controller
                 'approved_by' => $user->id,
                 'approved_at' => now(),
             ]);
+
+            $this->storeAttachments($request, $asset, $user->id);
 
             return redirect()->route('dashboard')->with('success', 'Data Aset Berhasil Diperbarui!');
         } else {
@@ -292,17 +317,9 @@ class AssetController extends Controller
     // 1. DASHBOARD: Pagination + Search
     public function index(Request $request)
     {
-        $query = Asset::query();
+        $query = Asset::query()->with('activeTransaction');
 
-        // Optimasi Query Search
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%')
-                ->orWhere('asset_tag', 'like', '%' . $search . '%')
-                ->orWhere('category', 'like', '%' . $search . '%');
-            });
-        }
+        $this->applyAssetFilters($request, $query);
 
         $assets = $query->latest()->paginate(10)->withQueryString();
 
@@ -323,6 +340,9 @@ class AssetController extends Controller
         $request->validate([
             'asset_tag' => 'required|exists:assets,asset_tag',
             'action' => 'required|in:check_in,check_out,maintenance',
+            'borrower_name' => 'nullable|string|max:255',
+            'due_at' => 'nullable|date|after_or_equal:today',
+            'notes' => 'nullable|string|max:1000',
         ]);
 
         $asset = Asset::where('asset_tag', $request->asset_tag)->firstOrFail();
@@ -343,12 +363,48 @@ class AssetController extends Controller
         DB::transaction(function () use ($asset, $newStatus, $request, $oldData, $user): void {
             $asset->update(['status' => $newStatus]);
 
+            if ($request->action === 'check_out') {
+                AssetTransaction::create([
+                    'asset_id' => $asset->id,
+                    'borrower_user_id' => $user->id,
+                    'borrower_name' => $request->borrower_name ?: $user->name,
+                    'borrowed_at' => now(),
+                    'due_at' => $request->due_at,
+                    'notes' => $request->notes,
+                    'created_by' => $user->id,
+                    'status' => 'borrowed',
+                ]);
+            }
+
+            if ($request->action === 'check_in') {
+                $activeTransaction = $asset->transactions()
+                    ->whereNull('returned_at')
+                    ->latest('borrowed_at')
+                    ->first();
+
+                if ($activeTransaction) {
+                    $returnedAt = now();
+                    $durationDays = max(1, Carbon::parse($activeTransaction->borrowed_at)->diffInDays($returnedAt));
+
+                    $activeTransaction->update([
+                        'returned_at' => $returnedAt,
+                        'duration_days' => $durationDays,
+                        'status' => 'returned',
+                        'notes' => $request->notes ?: $activeTransaction->notes,
+                    ]);
+                }
+            }
+
             AssetLog::create([
                 'asset_id' => $asset->id,
                 'user_id' => $user->id,
                 'action' => $request->action,
                 'old_data' => $oldData,
-                'new_data' => $asset->fresh()->toArray(),
+                'new_data' => array_merge($asset->fresh()->toArray(), [
+                    'borrower_name' => $request->borrower_name,
+                    'due_at' => $request->due_at,
+                    'notes' => $request->notes,
+                ]),
                 'status' => 'approved',
                 'approved_by' => $user->id,
                 'approved_at' => now(),
@@ -384,15 +440,7 @@ class AssetController extends Controller
     {
         $query = Asset::query();
 
-        // Terapkan filter search yang sama dengan printPreview
-        if ($request->has('search') && $request->search != '') {
-            $search = $request->search;
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', '%' . $search . '%')
-                  ->orWhere('asset_tag', 'like', '%' . $search . '%')
-                  ->orWhere('category', 'like', '%' . $search . '%');
-            });
-        }
+        $this->applyAssetFilters($request, $query);
 
         // Ambil hanya kolom id untuk efisiensi
         $assetIds = $query->pluck('id')->toArray();
@@ -419,6 +467,28 @@ class AssetController extends Controller
                         ->latest()
                         ->paginate(10);
 
+        $pendingLogs->getCollection()->transform(function ($log) {
+            $oldData = $log->old_data ?? [];
+            $newData = $log->new_data ?? [];
+            $diff = [];
+
+            if ($log->action === 'update') {
+                foreach ($newData as $key => $newValue) {
+                    $oldValue = $oldData[$key] ?? null;
+                    if ((string) $oldValue !== (string) $newValue) {
+                        $diff[$key] = [
+                            'old' => $oldValue,
+                            'new' => $newValue,
+                        ];
+                    }
+                }
+            }
+
+            $log->changed_fields = $diff;
+
+            return $log;
+        });
+
         return view('assets.approvals', compact('pendingLogs'));
     }
 
@@ -428,13 +498,17 @@ class AssetController extends Controller
         if (Auth::user()->role !== 'super_admin') abort(403);
 
         $log = \App\Models\AssetLog::findOrFail($id);
-        $asset = Asset::findOrFail($log->asset_id);
+        $asset = Asset::find($log->asset_id);
+
+        if (! $asset && $log->action !== 'delete') {
+            return back()->with('error', 'Aset terkait tidak ditemukan.');
+        }
 
         // Eksekusi perubahan ke tabel utama (assets) berdasarkan tipe action
         if ($log->action === 'update') {
-            $asset->update($log->new_data);
+            $asset->update($log->new_data ?? []);
         } elseif ($log->action === 'delete') {
-            $asset->delete();
+            $asset?->delete();
         }
 
         // Ubah status tiket log menjadi approved
@@ -463,5 +537,89 @@ class AssetController extends Controller
         ]);
 
         return back()->with('error', 'Tiket permintaan ' . strtoupper($log->action) . ' telah ditolak.');
+    }
+
+    public function history(Request $request)
+    {
+        $transactions = AssetTransaction::with(['asset', 'borrower'])
+            ->when($request->filled('status'), function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->when($request->filled('date_from'), function ($query) use ($request) {
+                $query->whereDate('borrowed_at', '>=', $request->date_from);
+            })
+            ->when($request->filled('date_to'), function ($query) use ($request) {
+                $query->whereDate('borrowed_at', '<=', $request->date_to);
+            })
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $search = $request->search;
+                $query->where(function ($q) use ($search) {
+                    $q->where('borrower_name', 'like', '%' . $search . '%')
+                        ->orWhereHas('asset', function ($assetQuery) use ($search) {
+                            $assetQuery->where('name', 'like', '%' . $search . '%')
+                                ->orWhere('asset_tag', 'like', '%' . $search . '%');
+                        });
+                });
+            })
+            ->latest('borrowed_at')
+            ->paginate(15)
+            ->withQueryString();
+
+        return view('assets.history', compact('transactions'));
+    }
+
+    protected function applyAssetFilters(Request $request, $query): void
+    {
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%')
+                    ->orWhere('asset_tag', 'like', '%' . $search . '%')
+                    ->orWhere('category', 'like', '%' . $search . '%')
+                    ->orWhere('serial_number', 'like', '%' . $search . '%')
+                    ->orWhere('vendor', 'like', '%' . $search . '%')
+                    ->orWhere('location', 'like', '%' . $search . '%');
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+
+        if ($request->filled('date_from')) {
+            $query->whereDate('purchase_date', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('purchase_date', '<=', $request->date_to);
+        }
+    }
+
+    protected function storeAttachments(Request $request, Asset $asset, ?int $uploadedBy = null): void
+    {
+        if (! $request->hasFile('attachments')) {
+            return;
+        }
+
+        foreach ($request->file('attachments') as $file) {
+            if (! $file) {
+                continue;
+            }
+
+            $path = $file->store('asset-attachments', 'public');
+
+            AssetAttachment::create([
+                'asset_id' => $asset->id,
+                'file_path' => $path,
+                'file_name' => $file->getClientOriginalName(),
+                'file_type' => $file->getClientMimeType(),
+                'file_size' => $file->getSize(),
+                'uploaded_by' => $uploadedBy,
+            ]);
+        }
     }
 }

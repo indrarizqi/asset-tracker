@@ -47,4 +47,14 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+
+    public function assetTransactions()
+    {
+        return $this->hasMany(AssetTransaction::class, 'borrower_user_id');
+    }
+
+    public function uploadedAttachments()
+    {
+        return $this->hasMany(AssetAttachment::class, 'uploaded_by');
+    }
 }

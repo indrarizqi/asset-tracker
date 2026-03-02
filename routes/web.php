@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function () {
     // === 1. FITUR OPERASIONAL ASET (Bisa diakses semua role) ===
     Route::middleware(['role:super_admin,admin'])->group(function () {
         Route::get('/assets', [AssetController::class, 'index'])->name('assets.index'); // Kelola aset
+        Route::get('/assets/history', [AssetController::class, 'history'])->name('assets.history');
         Route::get('/assets/create', [AssetController::class, 'create'])->name('assets.create');
         Route::post('/assets/store', [AssetController::class, 'store'])->name('assets.store');
         Route::post('/assets/update-status', [AssetController::class, 'updateStatusFromWeb'])->name('assets.update-status');

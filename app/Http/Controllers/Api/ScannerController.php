@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
 use App\Models\AssetLog;
+use App\Models\AssetTransaction;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -72,7 +74,10 @@ class ScannerController extends Controller
         $request->validate([
             'asset_tag' => 'required|exists:assets,asset_tag',
             'action' => 'required|in:check_in,check_out,maintenance', // check_in, check_out, maintenance
-            'verified_by_scan' => 'required|boolean' // KEAMANAN: Wajib true
+            'verified_by_scan' => 'required|boolean', // KEAMANAN: Wajib true
+            'borrower_name' => 'nullable|string|max:255',
+            'due_at' => 'nullable|date|after_or_equal:today',
+            'notes' => 'nullable|string|max:1000',
         ]);
 
         if (! $request->boolean('verified_by_scan')) {
@@ -105,12 +110,48 @@ class ScannerController extends Controller
         DB::transaction(function () use ($asset, $newStatus, $request, $oldData, $user): void {
             $asset->update(['status' => $newStatus]);
 
+            if ($request->action === 'check_out') {
+                AssetTransaction::create([
+                    'asset_id' => $asset->id,
+                    'borrower_user_id' => $user->id,
+                    'borrower_name' => $request->borrower_name ?: $user->name,
+                    'borrowed_at' => now(),
+                    'due_at' => $request->due_at,
+                    'notes' => $request->notes,
+                    'created_by' => $user->id,
+                    'status' => 'borrowed',
+                ]);
+            }
+
+            if ($request->action === 'check_in') {
+                $activeTransaction = $asset->transactions()
+                    ->whereNull('returned_at')
+                    ->latest('borrowed_at')
+                    ->first();
+
+                if ($activeTransaction) {
+                    $returnedAt = now();
+                    $durationDays = max(1, Carbon::parse($activeTransaction->borrowed_at)->diffInDays($returnedAt));
+
+                    $activeTransaction->update([
+                        'returned_at' => $returnedAt,
+                        'duration_days' => $durationDays,
+                        'status' => 'returned',
+                        'notes' => $request->notes ?: $activeTransaction->notes,
+                    ]);
+                }
+            }
+
             AssetLog::create([
                 'asset_id' => $asset->id,
                 'user_id' => $user->id,
                 'action' => $request->action,
                 'old_data' => $oldData,
-                'new_data' => $asset->fresh()->toArray(),
+                'new_data' => array_merge($asset->fresh()->toArray(), [
+                    'borrower_name' => $request->borrower_name,
+                    'due_at' => $request->due_at,
+                    'notes' => $request->notes,
+                ]),
                 'status' => 'approved',
                 'approved_by' => $user->id,
                 'approved_at' => now(),

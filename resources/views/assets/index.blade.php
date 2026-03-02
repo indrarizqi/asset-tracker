@@ -12,23 +12,47 @@
         showAssetModal: false, 
         showScannerModal: false, 
         showActionModal: false,
-        asset: { id: '', name: '', pic: '', category: '', status: '', condition: '', purchase_date: '', description: '', edit_url: '' },
+        asset: { id: '', name: '', pic: '', category: '', status: '', condition: '', purchase_date: '', location: '', vendor: '', serial_number: '', warranty_expiry_date: '', description: '', edit_url: '' },
         actionData: { id: '', tag: '', name: '', status: '' }
     }">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-            <div class="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-center gap-4 border border-gray-100">
-                
-                <div class="w-full sm:w-1/2 relative">
+            <div class="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-col gap-4 border border-gray-100">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-3 w-full">
+                    <div class="relative lg:col-span-2">
                     <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
                     </div>
                     <input type="text" id="search-input" value="{{ request('search') }}" 
                         class="block w-full pl-10 pr-3 py-2.5 border border-gray-200 rounded-lg leading-5 bg-gray-50 text-gray-900 placeholder-gray-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition duration-150 ease-in-out" 
                         placeholder="Cari aset berdasarkan ID, nama, atau kategori...">
+                    </div>
+
+                    <select id="status-filter" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="">Semua Status</option>
+                        <option value="available" @selected(request('status') === 'available')>Available</option>
+                        <option value="in_use" @selected(request('status') === 'in_use')>In Use</option>
+                        <option value="maintenance" @selected(request('status') === 'maintenance')>Maintenance</option>
+                        <option value="broken" @selected(request('status') === 'broken')>Broken</option>
+                    </select>
+
+                    <select id="category-filter" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="">Semua Kategori</option>
+                        <option value="mobile" @selected(request('category') === 'mobile')>Mobile</option>
+                        <option value="semi-mobile" @selected(request('category') === 'semi-mobile')>Semi-Mobile</option>
+                        <option value="fixed" @selected(request('category') === 'fixed')>Fixed</option>
+                    </select>
+
+                    <div class="flex items-center gap-2">
+                        <input type="date" id="date-from" value="{{ request('date_from') }}" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" title="Tanggal pembelian mulai">
+                        <input type="date" id="date-to" value="{{ request('date_to') }}" class="w-full border border-gray-200 rounded-lg px-3 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500" title="Tanggal pembelian akhir">
+                    </div>
                 </div>
 
                 <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+                    <a href="{{ route('assets.history') }}" class="inline-flex items-center px-4 py-2 bg-gray-700 rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-800 transition shadow-md">
+                        Riwayat
+                    </a>
                     
                     <button type="button" @click="showScannerModal = true; startScanner();" class="inline-flex items-center px-4 py-2 bg-emerald-600 rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-700 active:bg-emerald-900 focus:outline-none focus:border-emerald-900 focus:ring ring-emerald-300 transition ease-in-out duration-150 shadow-md">
                         <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-18m0 0h2m-2-11h2m14 0h2M9 7h1v1H9V7zm5 0h1v1h-1V7zm-5 5h1v1H9v-1zm5 0h1v1h-1v-1zM7 5h4v4H7V5zm8 0h4v4h-4V5zm-8 8h4v4H7v-4zm8 0h4v4h-4v-4z"></path></svg>
@@ -102,6 +126,26 @@
                             </div>
 
                             <div class="flex justify-between px-4 py-3">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Lokasi</span>
+                                <span class="text-sm font-semibold text-gray-700" x-text="asset.location || '-' "></span>
+                            </div>
+
+                            <div class="flex justify-between px-4 py-3 bg-gray-50/30">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Vendor</span>
+                                <span class="text-sm font-semibold text-gray-700" x-text="asset.vendor || '-' "></span>
+                            </div>
+
+                            <div class="flex justify-between px-4 py-3">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Serial Number</span>
+                                <span class="text-sm font-semibold text-gray-700" x-text="asset.serial_number || '-' "></span>
+                            </div>
+
+                            <div class="flex justify-between px-4 py-3 bg-gray-50/30">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Garansi Sampai</span>
+                                <span class="text-sm font-semibold text-gray-700" x-text="asset.warranty_expiry_date || '-' "></span>
+                            </div>
+
+                            <div class="flex justify-between px-4 py-3">
                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Status</span>
                                 <span class="px-2 py-1 text-[10px] font-bold rounded-full bg-blue-100 text-blue-700 uppercase" x-text="asset.status"></span>
                             </div>
@@ -143,6 +187,20 @@
                                 <option value="maintenance">Kirim ke Maintenance</option>
                             </select>
                         </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Peminjam</label>
+                                <input type="text" name="borrower_name" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Opsional (saat check-out)">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Jatuh Tempo</label>
+                                <input type="date" name="due_at" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            </div>
+                        </div>
+                        <div class="mb-5">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Catatan</label>
+                            <textarea name="notes" rows="2" class="w-full border border-gray-200 rounded-lg px-4 py-2.5 bg-gray-50 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="Opsional"></textarea>
+                        </div>
                         <div class="flex justify-end gap-3">
                             <button type="button" @click="showActionModal = false" class="px-5 py-2.5 bg-white border border-gray-300 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-50 transition">Batal</button>
                             <button type="submit" class="px-5 py-2.5 bg-emerald-600 rounded-lg text-sm font-bold text-white hover:bg-emerald-700 transition shadow-md">Simpan Status</button>
@@ -180,6 +238,10 @@
             
             // --- 1. AJAX LIVE SEARCH & PAGINATION ---
             const searchInput = document.getElementById('search-input');
+            const statusFilter = document.getElementById('status-filter');
+            const categoryFilter = document.getElementById('category-filter');
+            const dateFrom = document.getElementById('date-from');
+            const dateTo = document.getElementById('date-to');
             const tableContainer = document.getElementById('table-container');
             let typingTimer;                
             const doneTypingInterval = 500; 
@@ -189,11 +251,29 @@
                 typingTimer = setTimeout(performSearch, doneTypingInterval);
             });
 
+            [statusFilter, categoryFilter, dateFrom, dateTo].forEach((element) => {
+                element.addEventListener('change', performSearch);
+            });
+
             function performSearch() {
-                let query = searchInput.value;
                 let url = new URL(window.location.href);
+                const query = searchInput.value;
+
                 if(query) url.searchParams.set('search', query);
                 else url.searchParams.delete('search');
+
+                if (statusFilter.value) url.searchParams.set('status', statusFilter.value);
+                else url.searchParams.delete('status');
+
+                if (categoryFilter.value) url.searchParams.set('category', categoryFilter.value);
+                else url.searchParams.delete('category');
+
+                if (dateFrom.value) url.searchParams.set('date_from', dateFrom.value);
+                else url.searchParams.delete('date_from');
+
+                if (dateTo.value) url.searchParams.set('date_to', dateTo.value);
+                else url.searchParams.delete('date_to');
+
                 url.searchParams.delete('page'); 
                 window.history.pushState({}, '', url);
 

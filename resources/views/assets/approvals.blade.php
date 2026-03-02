@@ -44,6 +44,7 @@
                                 <th class="px-6 py-4 font-bold">Data Aset</th>
                                 <th class="px-6 py-4 font-bold">Diajukan Oleh</th>
                                 <th class="px-6 py-4 font-bold">Tipe Aksi</th>
+                                <th class="px-6 py-4 font-bold">Perbandingan Perubahan</th>
                                 <th class="px-6 py-4 font-bold text-right">Tindakan Eksekusi</th>
                             </tr>
                         </thead>
@@ -80,6 +81,23 @@
                                         <span class="px-2.5 py-1 rounded-md text-xs font-bold bg-gray-100 text-gray-700 uppercase">{{ $log->action }}</span>
                                     @endif
                                 </td>
+                                <td class="px-6 py-4 align-top">
+                                    @if($log->action === 'update' && !empty($log->changed_fields))
+                                        <div class="space-y-2 max-w-md">
+                                            @foreach($log->changed_fields as $field => $values)
+                                                <div class="border border-gray-200 rounded-lg p-2 bg-gray-50">
+                                                    <div class="text-[10px] font-bold uppercase tracking-wide text-gray-500 mb-1">{{ str_replace('_', ' ', $field) }}</div>
+                                                    <div class="text-[11px] text-red-600"><span class="font-semibold">Lama:</span> {{ is_array($values['old']) ? json_encode($values['old']) : ($values['old'] ?? '-') }}</div>
+                                                    <div class="text-[11px] text-emerald-700"><span class="font-semibold">Baru:</span> {{ is_array($values['new']) ? json_encode($values['new']) : ($values['new'] ?? '-') }}</div>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @elseif($log->action === 'delete')
+                                        <span class="text-xs text-red-600 font-semibold">Aset akan dihapus permanen.</span>
+                                    @else
+                                        <span class="text-xs text-gray-500">-</span>
+                                    @endif
+                                </td>
                                 <td class="px-6 py-4 text-right">
                                     <div class="flex items-center justify-end gap-2">
                                         <button type="button" 
@@ -100,7 +118,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-16 text-center">
+                                <td colspan="6" class="px-6 py-16 text-center">
                                     <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-50 mb-4 shadow-inner border border-emerald-100">
                                         <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                     </div>

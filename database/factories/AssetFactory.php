@@ -50,7 +50,11 @@ class AssetFactory extends Factory
                 'Headset Audio-Technica'
             ]) . ' ' . fake()->numberBetween(1, 100),
             'person_in_charge' => fake()->name(),
+            'location' => fake()->randomElement(['Gudang A', 'Gudang B', 'Kantor Pusat', 'Site Project']),
+            'vendor' => fake()->company(),
+            'serial_number' => strtoupper(fake()->bothify('SN-####-??##')),
             'purchase_date' => fake()->dateTimeBetween('-2 years', 'now')->format('Y-m-d'),
+            'warranty_expiry_date' => fake()->dateTimeBetween('now', '+2 years')->format('Y-m-d'),
             'category' => $category,
             'status' => fake()->randomElement($statuses),
             'condition' => fake()->randomElement($conditions),

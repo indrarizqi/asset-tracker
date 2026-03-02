@@ -51,6 +51,15 @@
                                 <svg class="w-3.5 h-3.5 text-red-400 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                                 Beli: {{ $asset->purchase_date ? \Carbon\Carbon::parse($asset->purchase_date)->format('d M Y') : '-' }}
                             </div>
+                            <div class="text-[11px] text-gray-500 mt-1">Lokasi: {{ $asset->location ?? '-' }}</div>
+                            @if($asset->activeTransaction)
+                                <div class="text-[11px] text-amber-600 mt-1 font-semibold">
+                                    Dipinjam: {{ $asset->activeTransaction->borrower_name }}
+                                    @if($asset->activeTransaction->due_at)
+                                        (Jatuh tempo {{ \Carbon\Carbon::parse($asset->activeTransaction->due_at)->format('d M Y') }})
+                                    @endif
+                                </div>
+                            @endif
                         </td>
 
                         <td class="px-4 py-4 text-center whitespace-nowrap">
@@ -104,6 +113,10 @@
                                         status: '{{ $asset->status }}',
                                         condition: '{{ $asset->condition ?? 'Baik' }}',
                                         purchase_date: '{{ $asset->purchase_date ? \Carbon\Carbon::parse($asset->purchase_date)->format('d M Y') : '-' }}',
+                                        location: '{{ addslashes((string) $asset->location) }}',
+                                        vendor: '{{ addslashes((string) $asset->vendor) }}',
+                                        serial_number: '{{ addslashes((string) $asset->serial_number) }}',
+                                        warranty_expiry_date: '{{ $asset->warranty_expiry_date ? \Carbon\Carbon::parse($asset->warranty_expiry_date)->format('d M Y') : '-' }}',
                                         description: '{{ addslashes(trim(preg_replace('/\s+/', ' ', $asset->description))) }}',
                                         edit_url: '{{ route('assets.edit', $asset->id) }}'
                                     }"
