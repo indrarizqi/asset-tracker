@@ -15,6 +15,9 @@ Route::middleware('auth:sanctum')->group(function () {
     
     // Update Status (Check in/out)
     Route::post('/asset/action', [ScannerController::class, 'updateStatus']);
+
+    // Logout mobile (revoke token aktif)
+    Route::post('/logout', [ScannerController::class, 'logout']);
     
     // Cek User sedang login siapa
     Route::get('/user', function (Request $request) {

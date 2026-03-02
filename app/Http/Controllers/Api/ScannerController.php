@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Asset;
+use App\Models\AssetLog;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ScannerController extends Controller
 {
@@ -68,31 +70,65 @@ class ScannerController extends Controller
     public function updateStatus(Request $request)
     {
         $request->validate([
-            'asset_tag' => 'required',
-            'action' => 'required', // check_in, check_out, maintenance
+            'asset_tag' => 'required|exists:assets,asset_tag',
+            'action' => 'required|in:check_in,check_out,maintenance', // check_in, check_out, maintenance
             'verified_by_scan' => 'required|boolean' // KEAMANAN: Wajib true
         ]);
 
-        if (!$request->verified_by_scan) {
+        if (! $request->boolean('verified_by_scan')) {
             return response()->json(['message' => 'Wajib Scan QR Code Di Lokasi!'], 403);
         }
 
+        $user = $request->user();
+
+        if (! in_array($user->role, ['admin', 'super_admin'])) {
+            return response()->json(['message' => 'Akses ditolak.'], 403);
+        }
+
         $asset = Asset::where('asset_tag', $request->asset_tag)->firstOrFail();
+        $oldData = $asset->toArray();
 
         // Logika Ganti Status
         if ($request->action == 'check_out') {
-            $asset->update(['status' => 'in_use']);
+            $newStatus = 'in_use';
             $message = 'Aset berhasil dipinjam/digunakan.';
         } elseif ($request->action == 'check_in') {
-            $asset->update(['status' => 'available']);
+            $newStatus = 'available';
             $message = 'Aset berhasil dikembalikan.';
         } elseif ($request->action == 'maintenance') {
-            $asset->update(['status' => 'maintenance']);
+            $newStatus = 'maintenance';
             $message = 'Aset masuk maintenance.';
         } else {
             return response()->json(['message' => 'Aksi Tidak Diketahui'], 400);
         }
 
-        return response()->json(['success' => true, 'message' => $message]);
+        DB::transaction(function () use ($asset, $newStatus, $request, $oldData, $user): void {
+            $asset->update(['status' => $newStatus]);
+
+            AssetLog::create([
+                'asset_id' => $asset->id,
+                'user_id' => $user->id,
+                'action' => $request->action,
+                'old_data' => $oldData,
+                'new_data' => $asset->fresh()->toArray(),
+                'status' => 'approved',
+                'approved_by' => $user->id,
+                'approved_at' => now(),
+            ]);
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'data' => $asset->fresh(),
+        ]);
+    }
+
+    // 4. Logout mobile: revoke token aktif
+    public function logout(Request $request)
+    {
+        $request->user()?->currentAccessToken()?->delete();
+
+        return response()->json(['success' => true, 'message' => 'Logout berhasil.']);
     }
 }

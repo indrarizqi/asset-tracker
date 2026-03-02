@@ -109,9 +109,24 @@
         }
     }
 
-    function doLogout() {
-        localStorage.clear();
-        location.reload();
+    async function doLogout() {
+        try {
+            if (currentToken) {
+                await fetch(API_URL + '/logout', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + currentToken,
+                        'Accept': 'application/json'
+                    }
+                });
+            }
+        } catch (err) {
+            console.warn('Logout API gagal, lanjut bersihkan sesi lokal.', err);
+        } finally {
+            localStorage.removeItem('token');
+            localStorage.removeItem('name');
+            location.reload();
+        }
     }
 
     function showScanner() {

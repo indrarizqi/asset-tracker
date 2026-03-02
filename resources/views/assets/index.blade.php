@@ -131,7 +131,7 @@
                     <h3 class="text-lg font-extrabold text-gray-900 mb-2">Update Status Aset</h3>
                     <p class="text-sm text-gray-500 mb-4">Aset: <span class="font-bold text-indigo-600" x-text="actionData.name"></span> (<span x-text="actionData.tag"></span>)</p>
                     
-                    <form id="form-update-status" method="POST" action="#">
+                    <form id="form-update-status" method="POST" action="{{ route('assets.update-status') }}">
                         @csrf
                         <input type="hidden" name="asset_tag" :value="actionData.tag">
                         <div class="mb-5">
@@ -145,7 +145,7 @@
                         </div>
                         <div class="flex justify-end gap-3">
                             <button type="button" @click="showActionModal = false" class="px-5 py-2.5 bg-white border border-gray-300 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-50 transition">Batal</button>
-                            <button type="button" onclick="alert('Fitur simpan status akan dihubungkan ke backend di tahap selanjutnya.')" class="px-5 py-2.5 bg-emerald-600 rounded-lg text-sm font-bold text-white hover:bg-emerald-700 transition shadow-md">Simpan Status</button>
+                            <button type="submit" class="px-5 py-2.5 bg-emerald-600 rounded-lg text-sm font-bold text-white hover:bg-emerald-700 transition shadow-md">Simpan Status</button>
                         </div>
                     </form>
                 </div>

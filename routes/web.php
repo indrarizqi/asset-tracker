@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/assets', [AssetController::class, 'index'])->name('assets.index'); // Kelola aset
         Route::get('/assets/create', [AssetController::class, 'create'])->name('assets.create');
         Route::post('/assets/store', [AssetController::class, 'store'])->name('assets.store');
+        Route::post('/assets/update-status', [AssetController::class, 'updateStatusFromWeb'])->name('assets.update-status');
         Route::get('/assets/print', [AssetController::class, 'printPreview'])->name('assets.print');
         Route::get('/assets/download-pdf', [AssetController::class, 'downloadPdf'])->name('assets.pdf');
         Route::get('/assets/{id}/edit', [AssetController::class, 'edit'])->name('assets.edit');

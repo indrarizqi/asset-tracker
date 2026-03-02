@@ -6,6 +6,7 @@ use App\Models\Asset;
 use App\Models\AssetLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Barryvdh\DomPDF\Facade\Pdf; // Import facade PDF
 
@@ -312,6 +313,49 @@ class AssetController extends Controller
 
         // Jika request biasa, kembalikan halaman index aset
         return view('assets.index', compact('assets'));
+    }
+
+    /**
+     * Update status cepat dari halaman index (web).
+     */
+    public function updateStatusFromWeb(Request $request)
+    {
+        $request->validate([
+            'asset_tag' => 'required|exists:assets,asset_tag',
+            'action' => 'required|in:check_in,check_out,maintenance',
+        ]);
+
+        $asset = Asset::where('asset_tag', $request->asset_tag)->firstOrFail();
+        $oldData = $asset->toArray();
+        $user = Auth::user();
+
+        if ($request->action === 'check_out') {
+            $newStatus = 'in_use';
+            $message = 'Aset berhasil dipinjam/digunakan.';
+        } elseif ($request->action === 'check_in') {
+            $newStatus = 'available';
+            $message = 'Aset berhasil dikembalikan.';
+        } else {
+            $newStatus = 'maintenance';
+            $message = 'Aset masuk maintenance.';
+        }
+
+        DB::transaction(function () use ($asset, $newStatus, $request, $oldData, $user): void {
+            $asset->update(['status' => $newStatus]);
+
+            AssetLog::create([
+                'asset_id' => $asset->id,
+                'user_id' => $user->id,
+                'action' => $request->action,
+                'old_data' => $oldData,
+                'new_data' => $asset->fresh()->toArray(),
+                'status' => 'approved',
+                'approved_by' => $user->id,
+                'approved_at' => now(),
+            ]);
+        });
+
+        return redirect()->route('assets.index')->with('success', $message);
     }
 
     // Method Selection untuk Menu "Print QR Code"
