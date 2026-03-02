@@ -180,7 +180,7 @@ class AssetController extends Controller
 
             $this->storeAttachments($request, $asset, $user->id);
 
-            return redirect()->route('dashboard')->with('success', 'Data Aset Berhasil Diperbarui!');
+            return redirect()->route('assets.index')->with('success', 'Data Aset Berhasil Diperbarui!');
         } else {
             // === ADMIN: Masuk Antrean Log (Data Asli Tidak Berubah Dulu) ===
             AssetLog::create([
@@ -192,7 +192,7 @@ class AssetController extends Controller
                 'status' => 'pending', // Status Log-nya Pending
             ]);
 
-            return redirect()->route('dashboard')->with('success', 'Permintaan update aset telah dikirim dan menunggu persetujuan Super Admin.');
+            return redirect()->route('assets.index')->with('success', 'Permintaan update aset telah dikirim dan menunggu persetujuan Super Admin.');
         }
     }
 
@@ -215,7 +215,7 @@ class AssetController extends Controller
             ]);
             
             $asset->delete();
-            return redirect()->route('dashboard')->with('success', 'Aset Berhasil Dihapus.');
+            return redirect()->route('assets.index')->with('success', 'Aset Berhasil Dihapus.');
         } else {
             // Admin: Request Hapus
             AssetLog::create([
@@ -226,7 +226,7 @@ class AssetController extends Controller
                 'status' => 'pending',
             ]);
             
-            return redirect()->route('dashboard')->with('success', 'Permintaan hapus aset dikirim ke Super Admin.');
+            return redirect()->route('assets.index')->with('success', 'Permintaan hapus aset dikirim ke Super Admin.');
         }
     }
 
