@@ -20,6 +20,7 @@ class AssetController extends Controller
     {
         // 1. Data Utama
         $totalAssets = Asset::count();
+        $totalValue = Asset::sum('price');
         $pendingCount = AssetLog::where('status', 'pending')->count();
         
         // 2. Data Status Aset
@@ -48,7 +49,7 @@ class AssetController extends Controller
         $logs = AssetLog::with(['user', 'asset'])->latest()->take(5)->get();
 
         return view('dashboard', compact(
-            'totalAssets', 'pendingCount', 
+            'totalAssets', 'pendingCount', 'totalValue',
             'statusAvailable', 'statusInUse', 'statusMaintenance', 'statusBroken',
             'catMobile', 'catSemiMobile', 'catFixed',
             'condBaik', 'condRusak', 'condRusakTotal', 'logs' 
@@ -66,10 +67,11 @@ class AssetController extends Controller
         $request->validate([
             'name' => 'required',
             'category' => 'required|in:mobile,semi-mobile,fixed',
-            'description' => 'required',
             'status' => 'required|in:in_use,maintenance,broken,available',
             'purchase_date' => 'required',
             'condition' => 'required',
+            'price' => 'nullable|numeric|min:0',
+            'description' => 'required',
             'location' => 'nullable|string|max:255',
             'vendor' => 'nullable|string|max:255',
             'serial_number' => 'nullable|string|max:255',
@@ -98,6 +100,7 @@ class AssetController extends Controller
             'purchase_date' => $request->purchase_date,
             'warranty_expiry_date' => $request->warranty_expiry_date,
             'condition' => $request->condition,
+            'price' => $request->price ?? 0,
             'person_in_charge' => $request->person_in_charge,
             'location' => $request->location,
             'vendor' => $request->vendor,
@@ -138,6 +141,7 @@ class AssetController extends Controller
             'status' => 'required|in:in_use,maintenance,broken,available',
             'purchase_date' => 'required',
             'condition' => 'required',
+            'price' => 'nullable|numeric|min:0',
             'location' => 'nullable|string|max:255',
             'vendor' => 'nullable|string|max:255',
             'serial_number' => 'nullable|string|max:255',
@@ -156,6 +160,7 @@ class AssetController extends Controller
             'purchase_date' => $request->purchase_date,
             'warranty_expiry_date' => $request->warranty_expiry_date,
             'condition' => $request->condition,
+            'price' => $request->price ?? 0,
             'person_in_charge' => $request->person_in_charge,
             'location' => $request->location,
             'vendor' => $request->vendor,

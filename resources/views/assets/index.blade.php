@@ -12,9 +12,10 @@
         showAssetModal: false, 
         showScannerModal: false, 
         showActionModal: false,
-        asset: { id: '', name: '', pic: '', category: '', status: '', condition: '', purchase_date: '', location: '', vendor: '', serial_number: '', warranty_expiry_date: '', description: '', edit_url: '' },
+        asset: { id: '', name: '', pic: '', category: '', status: '', condition: '', price: '', purchase_date: '', location: '', vendor: '', serial_number: '', warranty_expiry_date: '', description: '', edit_url: '' },
         actionData: { id: '', tag: '', name: '', status: '' }
-    }">
+    }"
+    @keydown.window.escape="showAssetModal = false; showScannerModal = false; showActionModal = false">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <div class="bg-white p-4 rounded-xl shadow-sm mb-6 flex flex-col gap-4 border border-gray-100">
@@ -113,6 +114,11 @@
                             <div class="flex justify-between px-4 py-3 bg-gray-50/30">
                                 <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Tgl. Pembelian</span>
                                 <span class="text-sm font-semibold text-gray-700" x-text="asset.purchase_date"></span>
+                            </div>
+
+                            <div class="flex justify-between px-4 py-3">
+                                <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">Nilai Aset</span>
+                                <span class="text-sm font-extrabold text-emerald-600" x-text="asset.price"></span>
                             </div>
 
                             <div class="flex justify-between px-4 py-3">

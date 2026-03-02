@@ -112,6 +112,7 @@
                                         category: '{{ $asset->category }}',
                                         status: '{{ $asset->status }}',
                                         condition: '{{ $asset->condition ?? 'Baik' }}',
+                                        price: 'Rp {{ number_format($asset->price ?? 0, 0, ',', '.') }}',
                                         purchase_date: '{{ $asset->purchase_date ? \Carbon\Carbon::parse($asset->purchase_date)->format('d M Y') : '-' }}',
                                         location: '{{ addslashes((string) $asset->location) }}',
                                         vendor: '{{ addslashes((string) $asset->vendor) }}',
