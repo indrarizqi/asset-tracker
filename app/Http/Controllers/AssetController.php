@@ -205,6 +205,12 @@ class AssetController extends Controller
     }
 
     // Export Laporan Aset
+    public function export()
+    {
+        return $this->exportReport();
+    }
+
+    // Export Laporan Aset
     public function exportReport()
     {
         // Ambil semua data aset, urutkan berdasarkan kategori lalu nama
