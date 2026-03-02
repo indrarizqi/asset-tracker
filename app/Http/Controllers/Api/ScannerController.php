@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -14,7 +13,6 @@ use Illuminate\Support\Facades\DB;
 
 class ScannerController extends Controller
 {
-    // 1. Login dari HP
     public function login(Request $request)
     {
         if (!Auth::attempt($request->only('email', 'password'))) {
@@ -23,13 +21,10 @@ class ScannerController extends Controller
 
         $user = User::where('email', $request->email)->firstOrFail();
 
-        // --- VALIDASI ROLE (HANYA ADMIN & SUPER ADMIN) ---
         if (!in_array($user->role, ['admin', 'super_admin'])) {
             return response()->json(['message' => 'Maaf, Hanya Admin dan Super Admin yang Boleh Masuk!'], 403);
         }
-        // ----------------------------------------
 
-        // Buat token (kunci akses) untuk HP
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()->json([
@@ -40,23 +35,20 @@ class ScannerController extends Controller
         ]);
     }
 
-    // 2. Endpoint saat Camera Scan QR
     public function scan($tag)
     {
-        // Cari aset berdasarkan ID Tag (misal: M-24-001)
         $asset = Asset::where('asset_tag', $tag)->first();
 
         if (!$asset) {
             return response()->json(['success' => false, 'message' => 'Aset Tidak Ditemukan!'], 404);
         }
 
-        // Tentukan Menu apa yang boleh muncul di HP berdasarkan Kategori & Status
         $actions = [];
         
         if ($asset->status == 'available') {
-            $actions[] = 'check_out'; // Menu "Pinjam / Pakai"
+            $actions[] = 'check_out'; 
         } elseif ($asset->status == 'in_use') {
-            $actions[] = 'check_in'; // Menu "Kembalikan"
+            $actions[] = 'check_in'; 
         }
         
         $actions[] = 'report_issue'; 
@@ -68,13 +60,12 @@ class ScannerController extends Controller
         ]);
     }
 
-    // 3. Eksekusi Update Status (Check-in / Check-out)
     public function updateStatus(Request $request)
     {
         $request->validate([
             'asset_tag' => 'required|exists:assets,asset_tag',
-            'action' => 'required|in:check_in,check_out,maintenance', // check_in, check_out, maintenance
-            'verified_by_scan' => 'required|boolean', // KEAMANAN: Wajib true
+            'action' => 'required|in:check_in,check_out,maintenance', 
+            'verified_by_scan' => 'required|boolean', 
             'borrower_name' => 'nullable|string|max:255',
             'due_at' => 'nullable|date|after_or_equal:today',
             'notes' => 'nullable|string|max:1000',
@@ -93,7 +84,6 @@ class ScannerController extends Controller
         $asset = Asset::where('asset_tag', $request->asset_tag)->firstOrFail();
         $oldData = $asset->toArray();
 
-        // Logika Ganti Status
         if ($request->action == 'check_out') {
             $newStatus = 'in_use';
             $message = 'Aset berhasil dipinjam/digunakan.';
@@ -165,7 +155,6 @@ class ScannerController extends Controller
         ]);
     }
 
-    // 4. Logout mobile: revoke token aktif
     public function logout(Request $request)
     {
         $request->user()?->currentAccessToken()?->delete();

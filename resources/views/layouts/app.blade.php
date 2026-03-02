@@ -56,11 +56,9 @@
         <input type="hidden" id="global-flash-error" value="{{ session('error') }}">
 
         <script>
-            // Realtime Clock
             function updateClock() {
             const now = new Date();
             
-            // Date Format
             const dateOptions = { 
                 weekday: 'long', 
                 day: 'numeric', 
@@ -69,7 +67,6 @@
             };
             const dateString = now.toLocaleDateString('id-GB', dateOptions);
 
-            // Time Format
             const timeOptions = { 
                 hour: '2-digit', 
                 minute: '2-digit', 
@@ -77,22 +74,18 @@
             };
             const timeString = now.toLocaleTimeString('en-GB', timeOptions);
 
-            // Masukkan ke elemen HTML
             const dateEl = document.getElementById('realtime-date');
             const timeEl = document.getElementById('realtime-time');
 
             if (dateEl) dateEl.innerText = dateString;
-            if (timeEl) timeEl.innerText = timeString; // Contoh output: 14:30
+            if (timeEl) timeEl.innerText = timeString; 
         }
 
-            // Update setiap 1 detik (agar pergantian menit tetap akurat)
             setInterval(updateClock, 1000);
-            updateClock(); // Jalankan langsung saat load
+            updateClock(); 
 
-            // Global Sweet Alert
             document.addEventListener('DOMContentLoaded', function () {
                 
-                // 1. GLOBAL TOAST MIXIN (Konfigurasi Animasi Toast)
                 const Toast = Swal.mixin({
                     toast: true,
                     position: 'top',
@@ -104,10 +97,9 @@
                         popup: 'colored-toast'
                     },
                     didOpen: (toast) => {
-                        toast.addEventListener('mouseenter', Swal.stopTimer) // Animasi stop saat di-hover
-                        toast.addEventListener('mouseleave', Swal.resumeTimer) // Lanjut saat mouse keluar
+                        toast.addEventListener('mouseenter', Swal.stopTimer) 
+                        toast.addEventListener('mouseleave', Swal.resumeTimer) 
                     },
-                    // ANIMASI MASUK & KELUAR (Lebih Hidup)
                     showClass: {
                         popup: 'swal2-show',
                         backdrop: 'swal2-backdrop-show',
@@ -120,7 +112,6 @@
                     }
                 });
 
-                // 2. CEK FLASH MESSAGE DARI SESSION
                 const successMsg = document.getElementById('global-flash-success')?.value;
                 const errorMsg = document.getElementById('global-flash-error')?.value;
 
@@ -142,10 +133,8 @@
                     });
                 }
 
-                // 3. GLOBAL EVENT LISTENER (Event Delegation untuk AJAX)
                 document.addEventListener('submit', function(e) {
                     
-                    // A. HANDLER LOGOUT
                     if (e.target && e.target.classList.contains('form-logout')) {
                         e.preventDefault();
                         Swal.fire({
@@ -159,7 +148,6 @@
                             cancelButtonText: 'Batal',
                             reverseButtons: true,
                             focusCancel: true,
-                            // ANIMASI POPUP (Zoom In)
                             showClass: {
                                 popup: 'animate__animated animate__zoomIn faster' 
                             },
@@ -168,14 +156,12 @@
                             }
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                // Hapus memori keranjang cetak QR sebelum keluar
                                 localStorage.removeItem('selectedAssets');
                                 e.target.submit();
                             }
                         });
                     }
 
-                    // B. HANDLER DELETE (Global)
                     if (e.target && e.target.classList.contains('form-delete')) {
                         e.preventDefault();
                         Swal.fire({
@@ -189,7 +175,6 @@
                             cancelButtonText: 'Batal',
                             reverseButtons: true,
                             focusCancel: true,
-                            // ANIMASI POPUP (Shake jika warning)
                             showClass: {
                                 popup: 'animate__animated animate__fadeInDown'
                             },
@@ -198,7 +183,6 @@
                             }
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                // Tampilkan Loading saat proses hapus berjalan
                                 Swal.fire({
                                     title: 'Sedang Menghapus...',
                                     timer: 2000,
